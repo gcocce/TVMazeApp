@@ -1,7 +1,12 @@
 package com.example.tvmazeapp.presentation
 
 import android.content.ClipData
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.util.Log
 import android.view.DragEvent
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -9,8 +14,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.tvmazeapp.placeholder.PlaceholderContent
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.example.tvmazeapp.R
+import com.example.tvmazeapp.TVMazeApp
 import com.example.tvmazeapp.databinding.FragmentItemDetailBinding
+import com.example.tvmazeapp.domain.entities.Episode
+import com.example.tvmazeapp.domain.entities.Show
+import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
+import hilt_aggregated_deps._dagger_hilt_android_internal_modules_ApplicationContextModule
+import timber.log.Timber
 
 /**
  * A fragment representing a single Item detail screen.
@@ -18,15 +39,17 @@ import com.example.tvmazeapp.databinding.FragmentItemDetailBinding
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
+@AndroidEntryPoint
 class ItemDetailFragment : Fragment() {
+
+    val viewModel: ShowsViewModel by activityViewModels()
 
     /**
      * The placeholder content this fragment is presenting.
      */
-    private var item: PlaceholderContent.PlaceholderItem? = null
+    private var showId: String? = null
 
-    lateinit var itemDetailTextView: TextView
-    private var toolbarLayout: CollapsingToolbarLayout? = null
+    lateinit var titleTextView: TextView
 
     private var _binding: FragmentItemDetailBinding? = null
 
@@ -37,8 +60,7 @@ class ItemDetailFragment : Fragment() {
     private val dragListener = View.OnDragListener { v, event ->
         if (event.action == DragEvent.ACTION_DROP) {
             val clipDataItem: ClipData.Item = event.clipData.getItemAt(0)
-            val dragData = clipDataItem.text
-            item = PlaceholderContent.ITEM_MAP[dragData]
+            showId = clipDataItem.text.toString()
             updateContent()
         }
         true
@@ -52,7 +74,7 @@ class ItemDetailFragment : Fragment() {
                 // Load the placeholder content specified by the fragment
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
-                item = PlaceholderContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
+                showId = it.getString(ARG_ITEM_ID)
             }
         }
     }
@@ -61,26 +83,77 @@ class ItemDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentItemDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        toolbarLayout = binding.toolbarLayout
-        itemDetailTextView = binding.itemDetail
+        titleTextView = binding.showTitle
 
-        updateContent()
+        //updateContent()
         rootView.setOnDragListener(dragListener)
 
         return rootView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.selected_show.observe(this, Observer<Show>{ show ->
+            Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
+
+            updateContent()
+
+            viewModel.loadEpisodes(show.id)
+        })
+
+        viewModel.episodes.observe(this, Observer<List<Episode>>{ episodes ->
+            for( e in episodes){
+                Timber.d("%s detail episode %s season %s number %s", TVMazeApp().TAG, e.name, e.season, e.number)
+            }
+        })
+    }
+
     private fun updateContent() {
-        toolbarLayout?.title = item?.content
+        val show = viewModel.selected_show.value
+
+        if(show!=null && binding!=null){
+
+            binding.showTitle.text = show.name
+
+            binding.genres?.text = show.genres.joinToString(" ")
+
+            binding.schedule?.text = show.schedule.time + " "+ show.schedule.days.joinToString(" ")
+
+            binding.summary?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(show.summary, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(show.summary)
+            }
+
+            binding.detailPoster?.let {
+                Glide.with(it.context)
+                    .load(show.image.original)
+                    .error(R.drawable.ic_broken_image_24)
+                    .skipMemoryCache(true)
+                    .centerInside()
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+                            binding.posterProgress?.setVisibility(View.GONE)
+                            return false
+                        }
+                        override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                            binding.posterProgress?.setVisibility(View.GONE)
+                            return false
+                        }
+                    })
+                    .into(it)
+            }
+
+
+
+        }
 
         // Show the placeholder content as text in a TextView.
-        item?.let {
-            itemDetailTextView.text = it.details
-        }
+        //item?.let {itemDetailTextView.text = it.details}
     }
 
     companion object {

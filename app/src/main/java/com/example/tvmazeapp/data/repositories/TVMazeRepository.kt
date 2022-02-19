@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.tvmazeapp.data.local.ShowDao
 import com.example.tvmazeapp.data.remote.ApiTvMaze
 import com.example.tvmazeapp.data.remote.dtos.NetworkShow
+import com.example.tvmazeapp.data.remote.mappers.NetworkEpisodeMapper
 import com.example.tvmazeapp.data.remote.mappers.NetworkShowMapper
+import com.example.tvmazeapp.domain.entities.Episode
 import com.example.tvmazeapp.domain.entities.Show
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -26,9 +28,9 @@ class TVMazeRepository @Inject constructor(
         return withContext(Dispatchers.IO) {
             var shows = ArrayList<Show>()
             try {
-                val remoteShows = remoteDataSource.getShows(0)
-                if (remoteShows.isSuccessful){
-                    val bodyList = remoteShows.body()
+                val response = remoteDataSource.getShows(0)
+                if (response.isSuccessful){
+                    val bodyList = response.body()
                     if (bodyList!=null){
                         shows = ArrayList(NetworkShowMapper().mapFromEntityList(bodyList))
                     }
@@ -39,6 +41,26 @@ class TVMazeRepository @Inject constructor(
             }
 
             shows
+        }
+    }
+
+    suspend fun loadRemoteEpisodes(showId: Int): ArrayList<Episode> {
+        return withContext(Dispatchers.IO) {
+            var episodes = ArrayList<Episode>()
+            try {
+                val response = remoteDataSource.getShowEpisodes(showId)
+                if (response.isSuccessful){
+                    val bodyList = response.body()
+                    if (bodyList!=null){
+                        episodes = ArrayList(NetworkEpisodeMapper().mapFromEntityList(bodyList))
+                    }
+                }
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            episodes
         }
     }
 

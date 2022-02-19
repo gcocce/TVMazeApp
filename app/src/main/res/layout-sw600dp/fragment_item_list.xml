@@ -12,6 +12,14 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="@dimen/item_width" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:name="com.example.tvmazeapp.ItemListFragment"
@@ -19,7 +27,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/container_margin"
         android:layout_marginStart="@dimen/container_margin"
-        app:layoutManager="LinearLayoutManager"
+        app:layoutManager="GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"

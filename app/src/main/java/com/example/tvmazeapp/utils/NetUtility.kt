@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.InetAddress
 
-class NetUtility {
+object NetUtility {
 
     fun isInternetAvailable(): Boolean {
         return try {

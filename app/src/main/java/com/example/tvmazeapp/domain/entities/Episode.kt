@@ -1,18 +1,15 @@
 package com.example.tvmazeapp.domain.entities
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Show(
+data class Episode(
     var id: Int,
-    var url: String,
     var name: String,
-    var status: String,
-    var type: String,
-    var genres: List<String>,
-    var language: String,
+    var season: Int,
+    var number: Int,
     var summary: String,
-    var schedule: ShowSchedule,
     var image: ShowImage
 ): Parcelable

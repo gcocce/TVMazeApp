@@ -9,7 +9,7 @@
     android:layout_marginStart="@dimen/container_horizontal_margin">
 
     <ProgressBar
-        android:id="@+id/progress"
+        android:id="@+id/progress_loading_show_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
@@ -17,14 +17,14 @@
         android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/item_list"
-        android:name="com.example.tvmazeapp.ItemListFragment"
+        android:id="@+id/show_list_recycler_view"
+        android:name="com.example.tvmazeapp.presentatin.views.ShowListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         app:layoutManager="GridLayoutManager"
         tools:context="com.example.tvmazeapp.presentation.views.ShowsActivity"
-        tools:listitem="@layout/item_list_content" />
+        tools:listitem="@layout/show_cardview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

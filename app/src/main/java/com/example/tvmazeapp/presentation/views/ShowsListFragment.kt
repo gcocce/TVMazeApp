@@ -52,7 +52,6 @@ class ShowsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentShowListBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -61,9 +60,7 @@ class ShowsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //ViewCompat.addOnUnhandledKeyEventListener(view, unhandledKeyEventListenerCompat)
-
-        val recyclerView: RecyclerView = binding.itemList
+        val recyclerView: RecyclerView? = binding.showListRecyclerView
 
         // Leaving this not using view binding as it relies on if the view is visible the current
         // layout configuration (layout, layout-sw600dp)
@@ -79,16 +76,13 @@ class ShowsListFragment : Fragment() {
 
             Timber.d("%s item %s %s %s", item.name, item.language, item.summary, TVMazeApp().TAG)
 
-            val bundle = Bundle()
-            bundle.putString(
-                ShowDetailFragment.ARG_ITEM_ID,
-                item.id.toString()
-            )
             if (itemDetailFragmentContainer != null) {
+                // layout configuration (layout, layout-sw600dp)
                 itemDetailFragmentContainer.findNavController()
-                    .navigate(R.id.fragment_item_detail, bundle)
+                    .navigate(R.id.fragment_item_detail)
             } else {
-                itemView.findNavController().navigate(R.id.show_item_detail, bundle)
+                                                       //show_item_detal is an action
+                itemView.findNavController().navigate(R.id.show_item_detail)
             }
         }
 
@@ -100,42 +94,39 @@ class ShowsListFragment : Fragment() {
         val onContextClickListener = View.OnContextClickListener { v ->
             val item = v.tag as Show
 
+            Timber.d("Context click of item " + item.id)
+
             viewModel.setSelectedShow(item)
 
-            Toast.makeText(
-                v.context,
-                "Context click of item " + item.id,
-                Toast.LENGTH_LONG
-            ).show()
             true
         }
 
-        recyclerViewAdapter = ShowsAdapter(
-            onClickListener,
-            onContextClickListener
-        )
+        recyclerViewAdapter = ShowsAdapter(onClickListener,onContextClickListener)
 
-        recyclerView.adapter = recyclerViewAdapter
-        recyclerView.layoutManager = GridLayoutManager(context,2);
+        recyclerView?.adapter = recyclerViewAdapter
+        recyclerView?.layoutManager = GridLayoutManager(context,2);
 
         viewModel.shows.observe(this, Observer<ArrayList<Show>>{ shows ->
-            // update UI
-
             Timber.d("%s List of Shows changed... ", TVMazeApp().TAG)
-
             //for (s in shows){Timber.d("%s Show %s", TVMazeApp().TAG, s.name)}
-
-            _binding?.progress?.let {
-                if (_binding?.progress?.visibility == View.VISIBLE){
-                    binding.progress?.visibility = View.GONE
-                }
-            }
 
             recyclerViewAdapter?.shows = shows
         })
+
+        viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
+
+            _binding?.progressLoadingShowList?.let {
+                //if (_binding?.progress?.visibility == View.VISIBLE){
+                progress?.let {
+                    if (progress){
+                        binding.progressLoadingShowList?.visibility = View.VISIBLE
+                    }else{
+                        binding.progressLoadingShowList?.visibility = View.GONE
+                    }
+                }
+            }
+        })
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

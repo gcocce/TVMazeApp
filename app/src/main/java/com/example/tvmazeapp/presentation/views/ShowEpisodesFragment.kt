@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
 import com.example.tvmazeapp.databinding.FragmentShowDetailBinding
+import com.example.tvmazeapp.databinding.FragmentShowEpisodesBinding
 import com.example.tvmazeapp.domain.entities.Episode
 import com.example.tvmazeapp.domain.entities.SeasonList
 import com.example.tvmazeapp.domain.entities.Show
@@ -38,15 +39,20 @@ import timber.log.Timber
  * on handsets.
  */
 @AndroidEntryPoint
-class ShowDetailFragment : Fragment() {
+class ShowEpisodesFragment : Fragment() {
 
     val viewModel: ShowsViewModel by activityViewModels()
 
     private lateinit var seasonsAdapter: SeasonsAdapter
 
+    /**
+     * The placeholder content this fragment is presenting.
+     */
+    private var showId: String? = null
+
     lateinit var titleTextView: TextView
 
-    private var _binding: FragmentShowDetailBinding? = null
+    private var _binding: FragmentShowEpisodesBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -55,8 +61,7 @@ class ShowDetailFragment : Fragment() {
     private val dragListener = View.OnDragListener { v, event ->
         if (event.action == DragEvent.ACTION_DROP) {
             val clipDataItem: ClipData.Item = event.clipData.getItemAt(0)
-
-            val showId = clipDataItem.text.toString()
+            showId = clipDataItem.text.toString()
             updateContent()
         }
         true
@@ -64,18 +69,14 @@ class ShowDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Timber.d("onCreate in ShowDetailFragment")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentShowDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentShowEpisodesBinding.inflate(inflater, container, false)
         val rootView = binding.root
-
-        Timber.d("onCreateView in ShowDetailFragment")
 
         titleTextView = binding.showTitle
 
@@ -88,55 +89,44 @@ class ShowDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Timber.d("onViewCreated in ShowDetailFragment")
-
         val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
 
         val onClickListener = View.OnClickListener { itemView ->
             val item = itemView.tag as Episode
+
+            //viewModel.setSelectedShow(item)
             Timber.d("%s Episode %s Number %s", item.name, item.number, TVMazeApp().TAG)
-        }
 
-        binding.button?.let {
-            it.setOnClickListener {
-                // Do some work here
-                //val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
-                if (itemDetailFragmentContainer != null) {
-                    // layout configuration (layout, layout-sw600dp)
-                    itemDetailFragmentContainer.findNavController()
-                        .navigate(R.id.show_episodes_fragment)
-                } else {
-                    binding.root.findNavController().navigate(R.id.show_episodes)
-                }
+            viewModel.setSelectedEpisode(item)
+
+            if (itemDetailFragmentContainer != null) {
+                itemDetailFragmentContainer.findNavController().navigate(R.id.episode_detail_fragment)
+            } else {
+                itemView.findNavController().navigate(R.id.episode_detail_fragment)
             }
+
         }
 
-        //val recyclerView: RecyclerView? = binding.episodeListRecyclerView
+        val recyclerView: RecyclerView? = binding.episodeListRecyclerView
 
-        //seasonsAdapter = SeasonsAdapter(onClickListener)
-        //recyclerView?.adapter = seasonsAdapter
+        seasonsAdapter = SeasonsAdapter(onClickListener)
+        recyclerView?.adapter = seasonsAdapter
 
-        viewModel.selectedShow.observe(this, Observer<Show>{ show ->
-            Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
+        viewModel.selectedShow.value?.let {
+            viewModel.loadEpisodes(it.id)
+            binding.showTitle.text = it.name
+        }
 
-            updateContent()
-
-            //viewModel.loadEpisodes(show.id)
-        })
-
-        /*
         viewModel.episodes.observe(this, Observer<List<Episode>>{ episodes ->
             for( e in episodes){
                 Timber.d("%s detail episode %s season %s number %s", TVMazeApp().TAG, e.name, e.season, e.number)
             }
 
             episodes?.let {
-                //loadEpisodes(seasonsAdapter, it)
+                loadEpisodes(seasonsAdapter, it)
             }
         })
-         */
 
-        /*
         viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->
             _binding?.progressLoadingEpisodeList?.let {
                 //if (_binding?.progress?.visibility == View.VISIBLE){
@@ -149,7 +139,6 @@ class ShowDetailFragment : Fragment() {
                 }
             }
         })
-         */
     }
 
     private fun loadEpisodes(seasonAdapter: SeasonsAdapter, allEpisodes: List<Episode>){
@@ -161,14 +150,17 @@ class ShowDetailFragment : Fragment() {
             if (e.season == currentSeason){
                 episodes.add(e)
             }else{
-                val season = SeasonList.Season(currentSeason.toString(), episodes)
+                val title = "Season $currentSeason"
+                val season = SeasonList.Season(title, episodes)
                 seasonArrayList.add(season)
                 currentSeason = e.season
                 episodes = ArrayList()
+                episodes.add(e)
             }
         }
 
-        val season = SeasonList.Season(currentSeason.toString(), episodes)
+        val title = "Season $currentSeason"
+        val season = SeasonList.Season(title, episodes)
         seasonArrayList.add(season)
 
         val seasonList = SeasonList(seasonArrayList.toList())
@@ -178,51 +170,9 @@ class ShowDetailFragment : Fragment() {
     private fun updateContent() {
         val show = viewModel.selectedShow.value
 
-        Timber.d("updateContent in ShowDetailFragment")
-
-        if(show!=null && _binding!=null){
+        if(show!=null && binding!=null){
             binding.showTitle.text = show.name
-
-            binding.genres?.text = show.genres.joinToString(" ")
-
-            binding.schedule?.text = show.schedule.time + " "+ show.schedule.days.joinToString(" ")
-
-            binding.summary?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(show.summary, Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                Html.fromHtml(show.summary)
-            }
-
-            binding.detailPoster?.let {
-                Glide.with(it.context)
-                    .load(show.image.original)
-                    .error(R.drawable.ic_broken_image_24)
-                    .skipMemoryCache(false)
-                    .centerInside()
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                            binding.posterProgress?.setVisibility(View.GONE)
-                            return false
-                        }
-                        override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-                            binding.posterProgress?.setVisibility(View.GONE)
-                            return false
-                        }
-                    })
-                    .into(it)
-            }
         }
-
-        // Show the placeholder content as text in a TextView.
-        //item?.let {itemDetailTextView.text = it.details}
-    }
-
-    companion object {
-        /**
-         * The fragment argument representing the item ID that this fragment
-         * represents.
-         */
-        const val ARG_ITEM_ID = "item_id"
     }
 
     override fun onDestroyView() {

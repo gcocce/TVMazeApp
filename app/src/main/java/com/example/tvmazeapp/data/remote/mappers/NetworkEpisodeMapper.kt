@@ -17,7 +17,7 @@ class NetworkEpisodeMapper
     override fun mapFromEntity(entity: NetworkEpisode): Episode {
         return Episode(
             id=entity.id,
-            image = ShowImage(entity.image.medium, entity.image.original),
+            image = ShowImage(entity.image?.medium ?: "", entity.image?.original ?: ""),
             name = entity.name,
             summary = entity.summary,
             number = entity.number,

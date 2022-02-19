@@ -3,16 +3,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_details"
-    app:startDestination="@id/fragment_item_detail">
+    app:startDestination="@id/fragment_empty">
+
+    <fragment
+        android:id="@+id/fragment_empty"
+        android:name="com.example.tvmazeapp.presentation.views.EmptyFragment"
+        android:label="item_episodes"
+        tools:layout="@layout/fragment_empty">
+        <action
+            android:id="@+id/fragment_item_detail"
+            app:destination="@id/fragment_item_detail" />
+    </fragment>
+
     <fragment
         android:id="@+id/fragment_item_detail"
         android:name="com.example.tvmazeapp.presentation.views.ShowDetailFragment"
         android:label="@string/title_item_detail"
         tools:layout="@layout/fragment_show_detail">
-        <argument
-            android:name="item_id"
-            android:defaultValue=""
-            app:argType="string" />
+
+        <action
+            android:id="@+id/show_episodes"
+            app:destination="@id/show_episodes_fragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/show_episodes_fragment"
+        android:name="com.example.tvmazeapp.presentation.views.ShowEpisodesFragment"
+        android:label="item_episodes"
+        tools:layout="@layout/fragment_show_episodes">
+
+        <action
+            android:id="@+id/episode_detail_fragment"
+            app:destination="@id/episode_detail_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/episode_detail_fragment"
+        android:name="com.example.tvmazeapp.presentation.views.ShowEpisodeDetailFragment"
+        android:label="item_episode_detail"
+        tools:layout="@layout/fragment_episode_detail">
+    </fragment>
+
 
 </navigation>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.views.ShowEpisodesFragment"
+    tools:ignore="MergeRootFrame">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/show_title"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:paddingBottom="16dp"
+                android:paddingEnd="@dimen/container_horizontal_margin"
+                android:paddingStart="@dimen/container_horizontal_margin"
+                android:paddingTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="title"
+                android:textSize="20sp"
+                android:textIsSelectable="true"
+                tools:context="com.example.tvmazeapp.presentation.views.ShowEpisodesFragment" />
+
+            <ProgressBar
+                android:id="@+id/progressLoadingEpisodeList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="52dp"
+                android:visibility="visible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/episode_list_recycler_view"
+                android:name="com.example.tvmazeapp.ShowDetailFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="20dp"
+                app:layoutManager="LinearLayoutManager"
+                tools:context="com.example.tvmazeapp.presentation.views.ShowEpisodesFragment"
+                tools:listitem="@layout/item_season" />
+
+        </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

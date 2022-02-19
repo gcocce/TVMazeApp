@@ -9,5 +9,5 @@ data class NetworkEpisode(
     var season: Int,
     var number: Int,
     var summary: String,
-    var image: NetworkImage
+    var image: NetworkImage?
 )

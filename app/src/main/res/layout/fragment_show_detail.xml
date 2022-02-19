@@ -14,9 +14,23 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/poster_progress"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/detail_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"/>
 
             <TextView
                 android:id="@+id/show_title"
@@ -32,20 +46,6 @@
                 android:textSize="20sp"
                 android:textIsSelectable="true"
                 tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
-
-            <ProgressBar
-                android:id="@+id/poster_progress"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:visibility="visible" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/detail_poster"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"/>
 
             <TextView
                 android:id="@+id/genres"
@@ -92,26 +92,20 @@
                 android:textIsSelectable="true"
                 tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
-            <ProgressBar
-                android:id="@+id/progress"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:visibility="visible" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/seasons"
-                android:name="com.example.tvmazeapp.ItemListFragment"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                app:layoutManager="LinearLayoutManager"
-                tools:context="com.example.tvmazeapp.presentation.views.ShowsActivity"
-                tools:listitem="@layout/item_list_content" />
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Episodes" />
+            </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

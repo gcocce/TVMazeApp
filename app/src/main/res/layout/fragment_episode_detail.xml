@@ -1,9 +1,12 @@
-<!-- Adding the same root's ID for view binding as other layout configurations -->
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_detail_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".presentation.views.ShowsActivity"
+    tools:ignore="MergeRootFrame">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,14 +19,14 @@
             android:orientation="vertical">
 
             <ProgressBar
-                android:id="@+id/poster_progress"
+                android:id="@+id/poster_episode_progress"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/detail_poster"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
@@ -45,7 +48,7 @@
                 tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
             <TextView
-                android:id="@+id/genres"
+                android:id="@+id/number_season"
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,22 +57,7 @@
                 android:paddingStart="@dimen/container_horizontal_margin"
                 android:paddingTop="16dp"
                 android:gravity="center_horizontal"
-                android:text="Genres"
-                android:textSize="16sp"
-                android:textIsSelectable="true"
-                tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
-
-            <TextView
-                android:id="@+id/schedule"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:paddingEnd="@dimen/container_horizontal_margin"
-                android:paddingStart="@dimen/container_horizontal_margin"
-                android:paddingTop="16dp"
-                android:gravity="center_horizontal"
-                android:text="Schedule"
+                android:text="Number Season"
                 android:textSize="16sp"
                 android:textIsSelectable="true"
                 tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
@@ -88,22 +76,6 @@
                 android:textSize="16sp"
                 android:textIsSelectable="true"
                 tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="Episodes" />
-            </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

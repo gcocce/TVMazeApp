@@ -1,4 +1,4 @@
-package com.example.tvmazeapp.presentation
+package com.example.tvmazeapp.presentation.views
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -11,14 +11,14 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
-import com.example.tvmazeapp.databinding.ActivityItemDetailBinding
+import com.example.tvmazeapp.databinding.ActivityShowsBinding
 import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ItemDetailShowsActivity : AppCompatActivity() {
+class ShowsActivity : AppCompatActivity() {
 
     val viewModel: ShowsViewModel by viewModels()
 
@@ -27,7 +27,7 @@ class ItemDetailShowsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityItemDetailBinding.inflate(layoutInflater)
+        val binding = ActivityShowsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navHostFragment =

@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context="com.example.tvmazeapp.presentation.ItemDetailShowsActivity"
+        tools:context="com.example.tvmazeapp.presentation.views.ShowsActivity"
         tools:listitem="@layout/item_list_content" />
 
     <fragment

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMazeApp">
         <activity
-            android:name=".presentation.ItemDetailShowsActivity"
+            android:name=".presentation.views.ShowsActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:resizeableActivity="true"

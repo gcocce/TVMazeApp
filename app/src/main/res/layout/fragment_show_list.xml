@@ -24,7 +24,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="GridLayoutManager"
-        tools:context="com.example.tvmazeapp.presentation.ItemDetailShowsActivity"
+        tools:context="com.example.tvmazeapp.presentation.views.ShowsActivity"
         tools:listitem="@layout/item_list_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

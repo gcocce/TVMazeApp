@@ -1,9 +1,14 @@
 package com.example.tvmazeapp.presentation.adapters
 
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -11,94 +16,90 @@ import androidx.core.net.toUri
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.tvmazeapp.R
+import com.example.tvmazeapp.databinding.ShowCardviewBinding
 import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import timber.log.Timber
 import java.io.File
 
-//: RecyclerView.Adapter<PicViewHolder>()
-class ShowsAdapter(viewModel: ShowsViewModel)  {
 
-    //var viewModel = viewModel
-    /**
-     * The videos that our Adapter will show
-     */
+class ShowsAdapter(
+    private val onClickListener: View.OnClickListener,
+    private val onContextClickListener: View.OnContextClickListener
+) :
+    RecyclerView.Adapter<ShowsAdapter.ViewHolder>() {
+
     var shows: List<Show> = emptyList()
         set(value) {
             field = value
-
             // Notify any registered observers that the data set has changed. This will cause every
             // element in our RecyclerView to be invalidated.
-            //notifyDataSetChanged()
+            notifyDataSetChanged()
         }
 
-    /*
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding =
+            ShowCardviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
 
-    /**
-     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent an item.
-     */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicViewHolder {
-        val withDataBinding: RecyclerviewItemBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            PicViewHolder.LAYOUT,
-            parent,
-            false
-        )
-        return PicViewHolder(withDataBinding)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = shows[position]
+        holder.titleView.text = item.name
+
+        Glide.with(holder.imageView.context)
+            .load(item.image.medium)
+            .error(R.drawable.ic_broken_image_24)
+            .skipMemoryCache(true)
+            .centerInside()
+            .thumbnail(0.5f)
+            .into(holder.imageView)
+
+        with(holder.itemView) {
+            tag = item
+            setOnClickListener(onClickListener)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                setOnContextClickListener(onContextClickListener)
+            }
+
+            setOnLongClickListener { v ->
+                // Setting the item id as the clip data so that the drop target is able to
+                // identify the id of the content
+                val clipItem = ClipData.Item(item.name)
+                val dragData = ClipData(
+                    v.tag as? CharSequence,
+                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
+                    clipItem
+                )
+
+                if (Build.VERSION.SDK_INT >= 24) {
+                    v.startDragAndDrop(
+                        dragData,
+                        View.DragShadowBuilder(v),
+                        null,
+                        0
+                    )
+                } else {
+                    v.startDrag(
+                        dragData,
+                        View.DragShadowBuilder(v),
+                        null,
+                        0
+                    )
+                }
+            }
+        }
     }
 
     override fun getItemCount() = shows.size
 
-    /**
-     * Called by RecyclerView to display the data at the specified position. T
-     */
-    override fun onBindViewHolder(holder: PicViewHolder, position: Int) {
-        holder.viewDataBinding.also {
-            it.pic = shows[position]
+    inner class ViewHolder(binding: ShowCardviewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-            val empty = shows[position].getSrc() == ""
-
-            Timber.d("onBindViewHolder file: %s", shows[position].getSrc())
-
-            val extDir = it.textView.context.getExternalFilesDir(null)
-            val file: File = File(extDir, shows[position].getSrc())
-
-            Timber.d("onBindViewHolder file uri %s", file.toUri())
-
-            if (!empty && file.exists()) {
-
-                Glide.with(it.imageView.context)
-                    .load(file.toUri())
-                    .fitCenter()
-                    .thumbnail(0.2f)
-                    .into(it.imageView)
-
-                it.textView.text = shows[position].getName()
-            }else{
-                Timber.d("onBindViewHolder empty file")
-                it.textView.text = "Not found"
-                it.textView2.text = ""
-            }
-        }
-
-        holder.itemView.setOnClickListener {
-            Timber.d("holder.itemView.setOnClickListener")
-        }
+        val titleView: TextView = binding.title
+        val imageView: ImageView = binding.poster
     }
 
-     */
 }
 
-/*
-/**
- * ViewHolder for items. All work is done by data binding.
- */
-class PicViewHolder(val viewDataBinding: RecyclerviewItemBinding) :
-    RecyclerView.ViewHolder(viewDataBinding.root) {
-    companion object {
-        @LayoutRes
-        val LAYOUT = com.example.photoclassifier.R.layout.recyclerview_item
-    }
-}
-
- */

@@ -1,22 +1,18 @@
-package com.example.tvmazeapp.presentation
+package com.example.tvmazeapp.presentation.views
 
 import android.content.ClipData
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.DragEvent
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -24,23 +20,21 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
-import com.example.tvmazeapp.databinding.FragmentItemDetailBinding
+import com.example.tvmazeapp.databinding.FragmentShowDetailBinding
 import com.example.tvmazeapp.domain.entities.Episode
 import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import hilt_aggregated_deps._dagger_hilt_android_internal_modules_ApplicationContextModule
 import timber.log.Timber
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [ItemListFragment]
+ * This fragment is either contained in a [ShowsListFragment]
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
 @AndroidEntryPoint
-class ItemDetailFragment : Fragment() {
+class ShowDetailFragment : Fragment() {
 
     val viewModel: ShowsViewModel by activityViewModels()
 
@@ -51,7 +45,7 @@ class ItemDetailFragment : Fragment() {
 
     lateinit var titleTextView: TextView
 
-    private var _binding: FragmentItemDetailBinding? = null
+    private var _binding: FragmentShowDetailBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -83,7 +77,7 @@ class ItemDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentItemDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentShowDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         titleTextView = binding.showTitle
@@ -97,7 +91,7 @@ class ItemDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.selected_show.observe(this, Observer<Show>{ show ->
+        viewModel.selectedShow.observe(this, Observer<Show>{ show ->
             Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
 
             updateContent()
@@ -113,7 +107,7 @@ class ItemDetailFragment : Fragment() {
     }
 
     private fun updateContent() {
-        val show = viewModel.selected_show.value
+        val show = viewModel.selectedShow.value
 
         if(show!=null && binding!=null){
 

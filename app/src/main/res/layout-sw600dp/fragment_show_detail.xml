@@ -13,6 +13,6 @@
         android:padding="16dp"
         android:textIsSelectable="true"
         android:text="title"
-        tools:context="com.example.tvmazeapp.presentation.ItemDetailFragment" />
+        tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

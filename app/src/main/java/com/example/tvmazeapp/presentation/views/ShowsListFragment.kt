@@ -1,34 +1,28 @@
-package com.example.tvmazeapp.presentation
+package com.example.tvmazeapp.presentation.views
 
 import android.content.ClipData
 import android.content.ClipDescription
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
-import com.example.tvmazeapp.databinding.FragmentItemListBinding
-import com.example.tvmazeapp.databinding.ItemListContentBinding
+import com.example.tvmazeapp.databinding.FragmentShowListBinding
 import com.example.tvmazeapp.databinding.ShowCardviewBinding
 import com.example.tvmazeapp.domain.entities.Show
+import com.example.tvmazeapp.presentation.adapters.ShowsAdapter
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -42,13 +36,13 @@ import timber.log.Timber
  * item details side-by-side using two vertical panes.
  */
 @AndroidEntryPoint
-class ItemListFragment : Fragment() {
+class ShowsListFragment : Fragment() {
 
     val viewModel: ShowsViewModel by activityViewModels()
 
-    private lateinit var recyclerViewAdapter: SimpleItemRecyclerViewAdapter
+    private lateinit var recyclerViewAdapter: ShowsAdapter
 
-    private var _binding: FragmentItemListBinding? = null
+    private var _binding: FragmentShowListBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -59,7 +53,7 @@ class ItemListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentItemListBinding.inflate(inflater, container, false)
+        _binding = FragmentShowListBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -87,7 +81,7 @@ class ItemListFragment : Fragment() {
 
             val bundle = Bundle()
             bundle.putString(
-                ItemDetailFragment.ARG_ITEM_ID,
+                ShowDetailFragment.ARG_ITEM_ID,
                 item.id.toString()
             )
             if (itemDetailFragmentContainer != null) {
@@ -116,10 +110,13 @@ class ItemListFragment : Fragment() {
             true
         }
 
-        recyclerViewAdapter = SimpleItemRecyclerViewAdapter(
+        recyclerViewAdapter = ShowsAdapter(
             onClickListener,
             onContextClickListener
         )
+
+        recyclerView.adapter = recyclerViewAdapter
+        recyclerView.layoutManager = GridLayoutManager(context,2);
 
         viewModel.shows.observe(this, Observer<ArrayList<Show>>{ shows ->
             // update UI
@@ -136,103 +133,9 @@ class ItemListFragment : Fragment() {
 
             recyclerViewAdapter?.shows = shows
         })
-
-        recyclerView.adapter = recyclerViewAdapter
-        recyclerView.layoutManager = GridLayoutManager(context,2);
-
-        //setupRecyclerView(recyclerView, onClickListener, onContextClickListener)
     }
 
-    private fun setupRecyclerView(
-        recyclerView: RecyclerView,
-        onClickListener: View.OnClickListener,
-        onContextClickListener: View.OnContextClickListener
-    ) {
 
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(
-            onClickListener,
-            onContextClickListener
-        )
-    }
-
-    class SimpleItemRecyclerViewAdapter(
-        private val onClickListener: View.OnClickListener,
-        private val onContextClickListener: View.OnContextClickListener
-    ) :
-        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
-
-        var shows: List<Show> = emptyList()
-            set(value) {
-                field = value
-                // Notify any registered observers that the data set has changed. This will cause every
-                // element in our RecyclerView to be invalidated.
-                notifyDataSetChanged()
-            }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding =
-                ShowCardviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = shows[position]
-            holder.titleView.text = item.name
-
-            Glide.with(holder.imageView.context)
-                .load(item.image.medium)
-                .error(R.drawable.ic_broken_image_24)
-                .skipMemoryCache(true)
-                .centerInside()
-                .thumbnail(0.5f)
-                .into(holder.imageView)
-
-            with(holder.itemView) {
-                tag = item
-                setOnClickListener(onClickListener)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setOnContextClickListener(onContextClickListener)
-                }
-
-                setOnLongClickListener { v ->
-                    // Setting the item id as the clip data so that the drop target is able to
-                    // identify the id of the content
-                    val clipItem = ClipData.Item(item.name)
-                    val dragData = ClipData(
-                        v.tag as? CharSequence,
-                        arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
-                        clipItem
-                    )
-
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        v.startDragAndDrop(
-                            dragData,
-                            View.DragShadowBuilder(v),
-                            null,
-                            0
-                        )
-                    } else {
-                        v.startDrag(
-                            dragData,
-                            View.DragShadowBuilder(v),
-                            null,
-                            0
-                        )
-                    }
-                }
-            }
-        }
-
-        override fun getItemCount() = shows.size
-
-        inner class ViewHolder(binding: ShowCardviewBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-
-            val titleView: TextView = binding.title
-            val imageView: ImageView = binding.poster
-        }
-
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ItemDetailShowsActivity"
+    tools:context=".presentation.views.ShowsActivity"
     tools:ignore="MergeRootFrame">
 
     <ScrollView
@@ -30,7 +31,7 @@
                 android:text="title"
                 android:textSize="20sp"
                 android:textIsSelectable="true"
-                tools:context="com.example.tvmazeapp.presentation.ItemDetailFragment" />
+                tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
             <ProgressBar
                 android:id="@+id/poster_progress"
@@ -59,7 +60,7 @@
                 android:text="Genres"
                 android:textSize="16sp"
                 android:textIsSelectable="true"
-                tools:context="com.example.tvmazeapp.presentation.ItemDetailFragment" />
+                tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
             <TextView
                 android:id="@+id/schedule"
@@ -74,7 +75,7 @@
                 android:text="Schedule"
                 android:textSize="16sp"
                 android:textIsSelectable="true"
-                tools:context="com.example.tvmazeapp.presentation.ItemDetailFragment" />
+                tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
             <TextView
                 android:id="@+id/summary"
@@ -89,7 +90,26 @@
                 android:text="Summary"
                 android:textSize="16sp"
                 android:textIsSelectable="true"
-                tools:context="com.example.tvmazeapp.presentation.ItemDetailFragment" />
+                tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:visibility="visible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/seasons"
+                android:name="com.example.tvmazeapp.ItemListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:layoutManager="LinearLayoutManager"
+                tools:context="com.example.tvmazeapp.presentation.views.ShowsActivity"
+                tools:listitem="@layout/item_list_content" />
 
         </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.example.tvmazeapp.presentation.views
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -16,6 +17,12 @@ import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import android.app.SearchManager
+
+import android.content.Intent
+
+
+
 
 @AndroidEntryPoint
 class ShowsActivity : AppCompatActivity() {
@@ -45,4 +52,5 @@ class ShowsActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
+
 }

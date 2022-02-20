@@ -1,12 +1,12 @@
 package com.example.tvmazeapp.presentation.views
 
+import android.app.SearchManager
 import android.content.ClipData
 import android.content.ClipDescription
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +26,11 @@ import com.example.tvmazeapp.presentation.adapters.ShowsAdapter
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import android.view.MenuInflater
+import android.content.Intent
+import android.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
+
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -44,9 +49,12 @@ class ShowsListFragment : Fragment() {
 
     private var _binding: FragmentShowListBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,7 +89,6 @@ class ShowsListFragment : Fragment() {
                 itemDetailFragmentContainer.findNavController()
                     .navigate(R.id.fragment_item_detail)
             } else {
-                                                       //show_item_detal is an action
                 itemView.findNavController().navigate(R.id.show_item_detail)
             }
         }
@@ -106,17 +113,26 @@ class ShowsListFragment : Fragment() {
         recyclerView?.adapter = recyclerViewAdapter
         recyclerView?.layoutManager = GridLayoutManager(context,2);
 
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewModel.nextPage()
+                }
+            }
+        })
+
         viewModel.shows.observe(this, Observer<ArrayList<Show>>{ shows ->
             Timber.d("%s List of Shows changed... ", TVMazeApp().TAG)
-            //for (s in shows){Timber.d("%s Show %s", TVMazeApp().TAG, s.name)}
-
             recyclerViewAdapter?.shows = shows
         })
 
-        viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        })
 
+        viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
             _binding?.progressLoadingShowList?.let {
-                //if (_binding?.progress?.visibility == View.VISIBLE){
                 progress?.let {
                     if (progress){
                         binding.progressLoadingShowList?.visibility = View.VISIBLE
@@ -126,6 +142,56 @@ class ShowsListFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.show_option_menu, menu)
+        //menu.clear()
+        //inflater?.inflate(R.menu.show_option_menu, menu)
+        val searchView = SearchView((activity as ShowsActivity).supportActionBar?.themedContext ?: context)
+
+        menu.findItem(R.id.menu_item_search).apply {
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            actionView = searchView
+        }
+
+        searchView.isIconifiedByDefault = false
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                Timber.d("searchView onQueryTextSubmit %s", query)
+
+                viewModel.searchShowRemote(query)
+
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Timber.d("searchView onQueryTextChange")
+                return false
+            }
+        })
+        searchView.setOnClickListener {view ->  }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Timber.d("%s ItemSelected: %s", TVMazeApp().TAG, item)
+
+        when (item.itemId) {
+            R.id.menu_item_search -> {
+
+            }
+            R.id.menu_item_settings -> {
+                val intent = Intent(activity, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.menu_item_favorites -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

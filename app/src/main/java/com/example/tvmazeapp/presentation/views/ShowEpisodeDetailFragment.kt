@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -71,6 +72,10 @@ class ShowEpisodeDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        })
+
         viewModel.selectedEpisode.value?.let {
             binding.showTitle.text = it.name
 
@@ -113,6 +118,8 @@ class ShowEpisodeDetailFragment : Fragment() {
                         })
                         .into(it)
                 }
+            }else{
+                binding.posterEpisodeProgress?.setVisibility(View.GONE)
             }
         }
     }

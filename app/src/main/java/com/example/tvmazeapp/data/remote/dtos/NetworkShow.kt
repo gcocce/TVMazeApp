@@ -8,10 +8,10 @@ data class NetworkShow(
     var url: String,
     var name: String,
     var status: String,
-    var type: String,
+    var type: String?,
     var genres: List<String>,
     var language: String,
-    var summary: String,
-    var schedule: NetworkSchedule,
-    var image: NetworkImage
+    var summary: String?,
+    var schedule: NetworkSchedule?,
+    var image: NetworkImage?
 )

@@ -8,6 +8,6 @@ data class NetworkEpisode(
     var name: String,
     var season: Int,
     var number: Int,
-    var summary: String,
+    var summary: String?,
     var image: NetworkImage?
 )

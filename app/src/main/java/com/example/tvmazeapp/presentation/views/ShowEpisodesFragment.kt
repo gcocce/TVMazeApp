@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -125,6 +126,10 @@ class ShowEpisodesFragment : Fragment() {
             episodes?.let {
                 loadEpisodes(seasonsAdapter, it)
             }
+        })
+
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
 
         viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->

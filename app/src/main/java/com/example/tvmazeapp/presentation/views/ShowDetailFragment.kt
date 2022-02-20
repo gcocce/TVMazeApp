@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -30,6 +31,7 @@ import com.example.tvmazeapp.presentation.adapters.SeasonsAdapter
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.lang.NullPointerException
 
 /**
  * A fragment representing a single Item detail screen.
@@ -48,8 +50,6 @@ class ShowDetailFragment : Fragment() {
 
     private var _binding: FragmentShowDetailBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val dragListener = View.OnDragListener { v, event ->
@@ -78,6 +78,8 @@ class ShowDetailFragment : Fragment() {
         Timber.d("onCreateView in ShowDetailFragment")
 
         titleTextView = binding.showTitle
+
+        binding.posterProgress.visibility=View.VISIBLE
 
         //updateContent()
         rootView.setOnDragListener(dragListener)
@@ -122,6 +124,10 @@ class ShowDetailFragment : Fragment() {
             updateContent()
 
             //viewModel.loadEpisodes(show.id)
+        })
+
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
 
         /*
@@ -183,11 +189,11 @@ class ShowDetailFragment : Fragment() {
         if(show!=null && _binding!=null){
             binding.showTitle.text = show.name
 
-            binding.genres?.text = show.genres.joinToString(" ")
+            binding.genres.text = show.genres.joinToString(" ")
 
-            binding.schedule?.text = show.schedule.time + " "+ show.schedule.days.joinToString(" ")
+            binding.schedule.text = show.schedule.time + " "+ show.schedule.days.joinToString(" ")
 
-            binding.summary?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding.summary.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(show.summary, Html.FROM_HTML_MODE_COMPACT)
             } else {
                 Html.fromHtml(show.summary)
@@ -201,16 +207,22 @@ class ShowDetailFragment : Fragment() {
                     .centerInside()
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                            binding.posterProgress?.setVisibility(View.GONE)
+                            if (binding.posterProgress.visibility ==View.VISIBLE){
+                                binding.posterProgress.setVisibility(View.GONE)
+                            }
                             return false
                         }
                         override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-                            binding.posterProgress?.setVisibility(View.GONE)
+                            Timber.d("onResourceReady")
+                            if (binding.posterProgress.visibility ==View.VISIBLE){
+                                binding.posterProgress.setVisibility(View.GONE)
+                            }
                             return false
                         }
                     })
                     .into(it)
             }
+
         }
 
         // Show the placeholder content as text in a TextView.
@@ -226,7 +238,8 @@ class ShowDetailFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        Timber.d("onDestroyView")
         super.onDestroyView()
-        _binding = null
+        //_binding = null
     }
 }

@@ -4,20 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tvmazeapp.data.remote.ResultWrapper
+import com.example.tvmazeapp.data.remote.mappers.NetworkEpisodeMapper
+import com.example.tvmazeapp.data.remote.mappers.NetworkShowMapper
+import com.example.tvmazeapp.data.remote.mappers.NetworkShowQueryMapper
 import com.example.tvmazeapp.data.repositories.TVMazeRepository
 import com.example.tvmazeapp.domain.entities.Episode
-import com.example.tvmazeapp.domain.entities.SeasonList
 import com.example.tvmazeapp.domain.entities.Show
-import com.example.tvmazeapp.domain.usecases.GetShowsNextPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ShowsViewModel @Inject constructor(
-    private val repository: TVMazeRepository,
-    private val showsNextPage: GetShowsNextPage
+    private val repository: TVMazeRepository
 ): ViewModel(){
+    enum class Mode {LIST, SEARCH, FAVORITES}
+
+    var mode:Mode = Mode.LIST
+
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
 
     private val _progressLoadingShows = MutableLiveData<Boolean>()
     val progressLoadingShows: LiveData<Boolean> = _progressLoadingShows
@@ -25,8 +34,7 @@ class ShowsViewModel @Inject constructor(
     private val _progressLoadingEpisodes = MutableLiveData<Boolean>()
     val progressLoadingEpisodes: LiveData<Boolean> = _progressLoadingEpisodes
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+
 
     private val _selectedShow = MutableLiveData<Show>()
     val selectedShow: LiveData<Show> = _selectedShow
@@ -40,15 +48,11 @@ class ShowsViewModel @Inject constructor(
     private val _selectedEpisode = MutableLiveData<Episode>()
     val selectedEpisode: LiveData<Episode> = _selectedEpisode
 
-    //private val _episodeList = MutableLiveData<SeasonList>()
-    //val seasonList: LiveData<SeasonList> = _episodeList
+    private var currentPage = 0
+    private var downloadingNextPage = false
 
     init {
-        viewModelScope.launch {
-            val showList = repository.loadRemoteShows()
-            _shows.value = showList
-            _progressLoadingShows.postValue(false)
-        }
+        loadShowsPage(currentPage)
     }
 
     fun setSelectedShow(show: Show){
@@ -59,12 +63,94 @@ class ShowsViewModel @Inject constructor(
         _selectedEpisode.postValue(episode)
     }
 
-    fun loadEpisodes(showId: Int){
-        viewModelScope.launch {
-            val episodeList = repository.loadRemoteEpisodes(showId)
-            _episodes.value = episodeList
-            _progressLoadingEpisodes.value = false
+    fun nextPage(){
+        if (mode==Mode.LIST){
+
+            if(!downloadingNextPage){
+                currentPage +=1
+                downloadingNextPage = true
+                loadShowsPage(currentPage)
+            }
         }
     }
 
+    fun searchShowRemote(query: String){
+        mode = Mode.SEARCH
+
+        _shows.value = ArrayList<Show>()
+        _progressLoadingShows.postValue(true)
+
+        Timber.d("ShowsViewModel searchShowRemote %s", query)
+
+        viewModelScope.launch {
+            val remoteQueryResponse = repository.searchShowRemote(query)
+            when (remoteQueryResponse) {
+                is ResultWrapper.NetworkError -> {
+                    Timber.d("remoteQueryResponse NetworkError")
+                    _error.postValue("Network Error")
+                }
+                is ResultWrapper.GenericError -> {
+                    Timber.d("remoteQueryResponse GenericError ${remoteQueryResponse}")
+                        _error.postValue("Error $remoteQueryResponse")
+                }
+                is ResultWrapper.Success -> {
+                    val shows = NetworkShowQueryMapper().mapFromEntityList(remoteQueryResponse.value)
+                        _shows.value = ArrayList(shows)
+                }
+            }
+            _progressLoadingShows.postValue(false)
+        }
+    }
+
+    fun loadShowsPage(page: Int){
+        Timber.d("ShowsViewModel loadShows %s", page)
+        viewModelScope.launch {
+            val remoteShowsResponse = repository.loadRemoteShows(page)
+            when (remoteShowsResponse) {
+                is ResultWrapper.NetworkError -> {
+                    Timber.d("remoteShowsResponse NetworkError")
+                    _error.postValue("Network Error")
+                }
+                is ResultWrapper.GenericError -> {
+                    Timber.d("remoteShowsResponse GenericError ${remoteShowsResponse}")
+
+                    // TVMaze respondes 404 when there are no more pages to retrieve
+                    if (remoteShowsResponse?.code!=404){
+                        _error.postValue("Error $remoteShowsResponse")
+                    }
+                }
+                is ResultWrapper.Success -> {
+                    val shows = NetworkShowMapper().mapFromEntityList(remoteShowsResponse.value)
+                    if (_shows.value.isNullOrEmpty()){
+                        _shows.value = ArrayList(shows)
+                    }else{
+                        _shows.value!!.addAll(shows)
+                    }
+                    downloadingNextPage = false
+                    Timber.d("ShowsViewModel downloading nextPage false")
+                }
+            }
+            _progressLoadingShows.postValue(false)
+        }
+    }
+
+    fun loadEpisodes(showId: Int){
+        viewModelScope.launch {
+            val remoteEpisodesResponse = repository.loadRemoteEpisodes(showId)
+            when (remoteEpisodesResponse) {
+                is ResultWrapper.NetworkError -> {
+                    Timber.d("remoteShowsResponse NetworkError")
+                    _error.postValue("Network Error")
+                }
+                is ResultWrapper.GenericError -> {
+                    _error.postValue("Error $remoteEpisodesResponse")
+                }
+                is ResultWrapper.Success -> {
+                    val episodes = NetworkEpisodeMapper().mapFromEntityList(remoteEpisodesResponse.value)
+                    _episodes.value = ArrayList(episodes)
+                }
+            }
+            _progressLoadingEpisodes.postValue(false)
+        }
+    }
 }

@@ -15,15 +15,15 @@ class NetworkShowMapper
     override fun mapFromEntity(entity: NetworkShow): Show {
         return Show(
             id=entity.id,
-            image = ShowImage(entity.image.medium, entity.image.original),
+            image = ShowImage(entity.image?.medium ?: "", entity.image?.original ?: ""),
             name = entity.name,
             status = entity.status,
-            type = entity.type,
+            type = entity.type ?: "",
             url = entity.url,
             genres = entity.genres,
             language = entity.language,
-            summary = entity.summary,
-            schedule = ShowSchedule(entity.schedule.time, entity.schedule.days)
+            summary = entity.summary ?: "No summary",
+            schedule = ShowSchedule(entity.schedule?.time ?: "", entity.schedule?.days ?: emptyList())
         )
     }
 

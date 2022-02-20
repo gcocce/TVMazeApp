@@ -19,7 +19,7 @@ class NetworkEpisodeMapper
             id=entity.id,
             image = ShowImage(entity.image?.medium ?: "", entity.image?.original ?: ""),
             name = entity.name,
-            summary = entity.summary,
+            summary = entity.summary ?: "No summary",
             number = entity.number,
             season = entity.season
         )

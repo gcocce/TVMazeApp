@@ -148,8 +148,7 @@ class ShowsListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater.inflate(R.menu.show_option_menu, menu)
-        //menu.clear()
-        //inflater?.inflate(R.menu.show_option_menu, menu)
+
         val searchView = SearchView((activity as ShowsActivity).supportActionBar?.themedContext ?: context)
 
         menu.findItem(R.id.menu_item_search).apply {
@@ -180,9 +179,6 @@ class ShowsListFragment : Fragment() {
         Timber.d("%s ItemSelected: %s", TVMazeApp().TAG, item)
 
         when (item.itemId) {
-            R.id.menu_item_search -> {
-
-            }
             R.id.menu_item_settings -> {
                 val intent = Intent(activity, SettingsActivity::class.java)
                 startActivity(intent)

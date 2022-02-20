@@ -12,6 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMazeApp">
         <activity
+            android:name=".presentation.views.UnlockActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.views.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".presentation.views.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
@@ -23,7 +36,8 @@
             tools:targetApi="24">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>

@@ -20,8 +20,7 @@ import timber.log.Timber
 import android.app.SearchManager
 
 import android.content.Intent
-
-
+import androidx.preference.PreferenceManager
 
 
 @AndroidEntryPoint
@@ -44,6 +43,7 @@ class ShowsActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

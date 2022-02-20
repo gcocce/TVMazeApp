@@ -219,6 +219,4 @@
             android:src="@drawable/ic_circle_24" />
 
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

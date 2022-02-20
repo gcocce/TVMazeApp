@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/item_list_fragment"
         android:name="com.example.tvmazeapp.presentation.views.ShowsListFragment"
-        android:label="ItemListFragment">
+        android:label="TVMazeApp">
         <action
             android:id="@+id/show_item_detail"
             app:destination="@id/item_detail_fragment" />
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/item_detail_fragment"
         android:name="com.example.tvmazeapp.presentation.views.ShowDetailFragment"
-        android:label="item_detail"
+        android:label="TVMazeApp"
         tools:layout="@layout/fragment_show_detail">
 
         <action
@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/show_episodes_fragment"
         android:name="com.example.tvmazeapp.presentation.views.ShowEpisodesFragment"
-        android:label="item_episodes"
+        android:label="TVMazeApp"
         tools:layout="@layout/fragment_show_episodes">
 
         <action
@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/episode_detail_fragment"
         android:name="com.example.tvmazeapp.presentation.views.ShowEpisodeDetailFragment"
-        android:label="item_episode_detail"
+        android:label="TVMazeApp"
         tools:layout="@layout/fragment_episode_detail">
     </fragment>
 

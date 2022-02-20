@@ -11,8 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMazeApp">
+
         <activity
             android:name=".presentation.views.UnlockActivity"
+            android:label="@string/unlock_title"
             android:exported="false" />
         <activity
             android:name=".presentation.views.SplashActivity"
@@ -24,10 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentation.views.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
+
         <activity
             android:name=".presentation.views.ShowsActivity"
             android:exported="true"

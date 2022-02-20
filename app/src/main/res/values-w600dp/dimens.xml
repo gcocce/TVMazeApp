@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">48dp</dimen>
-    <dimen name="pad_button_margin">10dp</dimen>
+    <dimen name="pad_button_margin">3dp</dimen>
     <dimen name="container_horizontal_margin">48dp</dimen>
 </resources>

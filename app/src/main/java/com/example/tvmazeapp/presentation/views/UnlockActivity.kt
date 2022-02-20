@@ -93,7 +93,7 @@ class UnlockActivity : AppCompatActivity(), View.OnClickListener{
         }
     }
 
-    fun setImagesState(){
+    private fun setImagesState(){
         for (i in 0 until user_pin.length) {
             dots.get(i).setImageResource(R.drawable.ic_catching_pokemon_24)
         }
@@ -104,13 +104,13 @@ class UnlockActivity : AppCompatActivity(), View.OnClickListener{
         }
     }
 
-    fun shakeImages(){
+    private fun shakeImages(){
         val shake: Animation = AnimationUtils.loadAnimation(this, R.anim.shake_animation)
         binding.dotLayout.startAnimation(shake)
         Toast.makeText(this, "Wrong Password", Toast.LENGTH_SHORT).show()
     }
 
-    fun getButtonNumber(v:View): Int{
+    private fun getButtonNumber(v:View): Int{
         return when(v.id){
             R.id.button0 -> 0
             R.id.button1 -> 1

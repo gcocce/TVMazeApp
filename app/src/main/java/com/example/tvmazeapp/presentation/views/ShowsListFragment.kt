@@ -153,7 +153,7 @@ class ShowsListFragment : Fragment() {
         val searchView = SearchView((activity as ShowsActivity).supportActionBar?.themedContext ?: context)
 
         menu.findItem(R.id.menu_item_search).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
             actionView = searchView
         }
 
@@ -186,6 +186,9 @@ class ShowsListFragment : Fragment() {
             R.id.menu_item_settings -> {
                 val intent = Intent(activity, SettingsActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.menu_item_full_list -> {
+                viewModel.switchToFullList()
             }
             R.id.menu_item_favorites -> {
 

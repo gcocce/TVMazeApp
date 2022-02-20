@@ -63,6 +63,18 @@ class ShowsViewModel @Inject constructor(
         _selectedEpisode.postValue(episode)
     }
 
+    fun switchToFullList(){
+        if (mode!=Mode.LIST){
+            mode=Mode.LIST
+
+            _shows.value = ArrayList<Show>()
+            _progressLoadingShows.postValue(true)
+
+            currentPage = 0
+            loadShowsPage(currentPage)
+        }
+    }
+
     fun nextPage(){
         if (mode==Mode.LIST){
 

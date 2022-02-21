@@ -40,6 +40,16 @@ class ShowsListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Timber.d("viewModel.error.observe")
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        })
+
+        viewModel.message.observe(this, Observer<String>{ message ->
+            Timber.d("viewModel.message.observe")
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        })
     }
 
     override fun onCreateView(
@@ -91,19 +101,6 @@ class ShowsListFragment : Fragment() {
             }
         })
 
-        viewModel.shows.observe(this, Observer<List<Show>>{ shows ->
-            Timber.d("%s List of Shows changed... ShowsListFragment ", TVMazeApp().TAG)
-            recyclerViewAdapter?.shows = shows
-        })
-
-        viewModel.error.observe(this, Observer<String>{ message ->
-            if (viewModel.showError?.value == true){
-                viewModel.cleanError()
-                Timber.d("viewModel.error.observe")
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-        })
-
         viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
             _binding?.progressLoadingShowList?.let {
                 progress?.let {
@@ -114,6 +111,11 @@ class ShowsListFragment : Fragment() {
                     }
                 }
             }
+        })
+
+        viewModel.shows.observe(this, Observer<List<Show>>{ shows ->
+            Timber.d("%s List of Shows changed... ShowsListFragment ", TVMazeApp().TAG)
+            recyclerViewAdapter?.shows = shows
         })
     }
 
@@ -151,7 +153,8 @@ class ShowsListFragment : Fragment() {
 
         when (item.itemId) {
             R.id.menu_item_settings -> {
-                val intent = Intent(activity, SettingsActivity::class.java)
+                //val intent = Intent(activity, SettingsActivity::class.java)
+                val intent = Intent(activity, CustomSettingsActivity::class.java)
                 startActivity(intent)
             }
             R.id.menu_item_full_list -> {

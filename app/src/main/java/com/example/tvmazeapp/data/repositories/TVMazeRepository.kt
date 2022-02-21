@@ -3,10 +3,8 @@ package com.example.tvmazeapp.data.repositories
 import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.room.RoomDatabase
 import com.example.tvmazeapp.data.local.ShowsDao
 import com.example.tvmazeapp.data.local.mappers.DBShowMapper
-import com.example.tvmazeapp.data.local.mappers.DBShowMapper_Factory
 import com.example.tvmazeapp.data.remote.ApiTvMaze
 import com.example.tvmazeapp.data.remote.ResultWrapper
 import com.example.tvmazeapp.data.remote.dtos.NetworkEpisode
@@ -24,9 +22,9 @@ class TVMazeRepository @Inject constructor(
     private val localDataSource: ShowsDao
 ) {
 
-    val favorites: LiveData<List<Show>> = Transformations.map(localDataSource.getAllShows()){
-        it.map {
-            DBShowMapper().mapFromEntity(it)
+    val favorites: LiveData<List<Show>> = Transformations.map(localDataSource.getAllShows()){ itL ->
+        itL.map { itDb ->
+            DBShowMapper().mapFromEntity(itDb)
         }
     }
 
@@ -53,7 +51,7 @@ class TVMazeRepository @Inject constructor(
             try {
                 localDataSource.insert(DBShowMapper().mapToEntity(show))
             } catch (e: SQLiteConstraintException) {
-                Timber.e(e.message)
+                Timber.e("SQLiteConstraintException %s ", e.message)
             }catch (e: Exception){
                 Timber.e("Exception: %s", e.message)
             }

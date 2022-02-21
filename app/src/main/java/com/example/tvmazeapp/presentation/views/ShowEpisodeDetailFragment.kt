@@ -68,14 +68,6 @@ class ShowEpisodeDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.error.observe(this, Observer<String>{ message ->
-            if (viewModel.showError?.value == true){
-                viewModel.cleanError()
-                Timber.d("viewModel.error.observe")
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-        })
-
         viewModel.selectedEpisode.value?.let {
             binding.showTitle.text = it.name
             updateContent()
@@ -105,12 +97,12 @@ class ShowEpisodeDetailFragment : Fragment() {
                         .centerInside()
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                                binding.posterEpisodeProgress?.setVisibility(View.GONE)
-                                binding.detailPoster?.setVisibility(View.GONE)
+                                binding.posterEpisodeProgress?.visibility = View.GONE
+                                binding.detailPoster?.visibility = View.GONE
                                 return false
                             }
                             override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-                                binding.posterEpisodeProgress?.setVisibility(View.GONE)
+                                binding.posterEpisodeProgress?.visibility = View.GONE
                                 Timber.d("onLoadFailed")
                                 return false
                             }
@@ -118,7 +110,7 @@ class ShowEpisodeDetailFragment : Fragment() {
                         .into(it)
                 }
             }else{
-                binding.posterEpisodeProgress?.setVisibility(View.GONE)
+                binding.posterEpisodeProgress?.visibility = View.GONE
             }
         }
     }

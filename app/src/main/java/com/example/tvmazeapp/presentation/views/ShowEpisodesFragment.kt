@@ -37,6 +37,11 @@ class ShowEpisodesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.error.observe(this, Observer<String>{ message ->
+            Timber.d("viewModel.error.observe")
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        })
     }
 
     override fun onCreateView(
@@ -67,7 +72,6 @@ class ShowEpisodesFragment : Fragment() {
             } else {
                 itemView.findNavController().navigate(R.id.episode_detail_fragment)
             }
-
         }
 
         val recyclerView: RecyclerView? = binding.episodeListRecyclerView
@@ -84,15 +88,7 @@ class ShowEpisodesFragment : Fragment() {
             }
         })
 
-        viewModel.error.observe(this, Observer<String>{ message ->
-            if (viewModel.showError?.value == true){
-                viewModel.cleanError()
-                Timber.d("viewModel.error.observe")
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-        })
-
-        viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->
+         viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->
             _binding?.progressLoadingEpisodeList?.let {
                 progress?.let {
                     if (progress){

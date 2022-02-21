@@ -3,19 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.tvmazeapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".TVMazeApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TVMazeApp">
-
+        <activity
+            android:name=".presentation.views.CustomSettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:exported="false" />
         <activity
             android:name=".presentation.views.UnlockActivity"
-            android:label="@string/unlock_title"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/unlock_title" />
         <activity
             android:name=".presentation.views.SplashActivity"
             android:exported="true"
@@ -26,12 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".presentation.views.SettingsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_settings" />
-
         <activity
             android:name=".presentation.views.ShowsActivity"
             android:exported="true"
@@ -40,12 +39,8 @@
             tools:targetApi="24">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
 </manifest>

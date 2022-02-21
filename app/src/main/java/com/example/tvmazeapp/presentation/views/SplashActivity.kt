@@ -1,5 +1,6 @@
 package com.example.tvmazeapp.presentation.views
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tvmazeapp.R
@@ -12,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
@@ -21,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val security = sharedPreferences.getBoolean("security_pin", false)
+        val security = sharedPreferences.getBoolean("security", false)
         Timber.d("security is : %s", security)
 
         Handler(Looper.getMainLooper()).postDelayed({

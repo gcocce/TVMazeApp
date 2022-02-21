@@ -46,11 +46,11 @@ class ShowsViewModel @Inject constructor(
     private val _selectedEpisode = MutableLiveData<Episode>()
     val selectedEpisode: LiveData<Episode> = _selectedEpisode
 
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String> = _message
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
-
-    private val _showEerror = MutableLiveData<Boolean>()
-    val showError: LiveData<Boolean> = _showEerror
 
     val favorites: LiveData<List<Show>>
         get() {
@@ -62,10 +62,6 @@ class ShowsViewModel @Inject constructor(
 
     init {
         loadShowsPage(currentPage)
-    }
-
-    fun cleanError(){
-        _showEerror.value = false
     }
 
     fun setSelectedShow(show: Show){
@@ -139,24 +135,20 @@ class ShowsViewModel @Inject constructor(
             when (remoteQueryResponse) {
                 is ResultWrapper.NetworkError -> {
                     Timber.d("remoteQueryResponse NetworkError")
-                    _showEerror.value = true
                     _error.postValue("Network Error")
                 }
                 is ResultWrapper.GenericError -> {
                     Timber.d("remoteQueryResponse GenericError ${remoteQueryResponse}")
-                    _showEerror.value = true
                     _error.postValue("Unexpected Error")
                 }
                 is ResultWrapper.Success -> {
                     val shows = NetworkShowQueryMapper().mapFromEntityList(remoteQueryResponse.value)
                     Timber.d("ResultWrapper.Success remoteQuery")
                     if (shows.isEmpty()){
-                        _showEerror.value = true
-                        _error.postValue("Nothing Found")
+                        _message.postValue("Nothing Found")
                     }else{
                         _shows.value = shows
                     }
-
                 }
             }
             _progressLoadingShows.postValue(false)
@@ -170,7 +162,6 @@ class ShowsViewModel @Inject constructor(
             when (remoteShowsResponse) {
                 is ResultWrapper.NetworkError -> {
                     Timber.d("remoteShowsResponse NetworkError")
-                    _showEerror.value = true
                     _error.postValue("Network Error")
                 }
                 is ResultWrapper.GenericError -> {
@@ -178,7 +169,6 @@ class ShowsViewModel @Inject constructor(
 
                     // TVMaze respondes 404 when there are no more pages to retrieve
                     if (remoteShowsResponse?.code!=404){
-                        _showEerror.value = true
                         _error.postValue("Unexpected Error")
                     }
                 }
@@ -208,11 +198,9 @@ class ShowsViewModel @Inject constructor(
             when (remoteEpisodesResponse) {
                 is ResultWrapper.NetworkError -> {
                     Timber.d("remoteShowsResponse NetworkError")
-                    _showEerror.value = true
                     _error.postValue("Network Error")
                 }
                 is ResultWrapper.GenericError -> {
-                    _showEerror.value = true
                     _error.postValue("Unexpected Error")
                 }
                 is ResultWrapper.Success -> {

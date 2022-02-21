@@ -88,14 +88,6 @@ class ShowsFavoritesFragment : Fragment() {
             recyclerViewAdapter?.shows = favorites
         })
 
-        viewModel.error.observe(this, Observer<String>{ message ->
-            if (viewModel.showError?.value == true){
-                viewModel.cleanError()
-                Timber.d("viewModel.error.observe")
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-        })
-
         viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
             _binding?.progressLoadingShowList?.let {
                 progress?.let {

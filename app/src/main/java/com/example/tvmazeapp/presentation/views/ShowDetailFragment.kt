@@ -65,7 +65,7 @@ class ShowDetailFragment : Fragment() {
 
         val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
 
-        binding.button?.let {
+        binding.button.let {
             it.setOnClickListener {
                 if (itemDetailFragmentContainer != null) {
                     // layout configuration (layout, layout-sw600dp)
@@ -77,7 +77,7 @@ class ShowDetailFragment : Fragment() {
             }
         }
 
-        binding.buttonFavorites?.setOnClickListener {
+        binding.buttonFavorites.setOnClickListener {
             if (isFavorite){
                 viewModel.removeFromFavorites()
             }else{
@@ -85,7 +85,7 @@ class ShowDetailFragment : Fragment() {
             }
         }
 
-        isFavorite = viewModel.selectedShowIsFavorite?.value ?: false
+        isFavorite = viewModel.selectedShowIsFavorite.value ?: false
 
         updateFavoriteButton(isFavorite)
 
@@ -98,21 +98,13 @@ class ShowDetailFragment : Fragment() {
             Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
             updateContent()
         })
-
-        viewModel.error.observe(this, Observer<String>{ message ->
-            if (viewModel.showError?.value == true){
-                viewModel.cleanError()
-                Timber.d("viewModel.error.observe")
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-        })
     }
 
     private fun updateFavoriteButton(isFfavorite: Boolean){
         if(isFfavorite){
-            binding.buttonFavorites?.text = "Remove from Favorites"
+            binding.buttonFavorites.text = getString(R.string.remove_from_favorites)
         }else{
-            binding.buttonFavorites?.text = "Add to Favorites"
+            binding.buttonFavorites.text = getString(R.string.add_to_favorites)
         }
     }
 
@@ -134,7 +126,7 @@ class ShowDetailFragment : Fragment() {
                 Html.fromHtml(show.summary)
             }
 
-            binding.detailPoster?.let {
+            binding.detailPoster.let {
                 Glide.with(it.context)
                     .load(show.image.original)
                     .error(R.drawable.ic_broken_image_24)
@@ -142,12 +134,13 @@ class ShowDetailFragment : Fragment() {
                     .centerInside()
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                            binding.posterProgress.setVisibility(View.GONE)
+                            binding.posterProgress.visibility = View.GONE
                             return false
                         }
+
                         override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
                             Timber.d("onResourceReady")
-                            binding.posterProgress.setVisibility(View.GONE)
+                            binding.posterProgress.visibility = View.GONE
                             return false
                         }
                     })

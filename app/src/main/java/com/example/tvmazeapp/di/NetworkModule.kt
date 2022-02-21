@@ -1,5 +1,6 @@
 package com.example.rickandmorty_mvvm_coroutines_livedata_hilt_testing_app.di
 
+import android.content.Context
 import com.example.tvmazeapp.data.remote.ApiTvMaze
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -15,6 +16,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,15 +49,22 @@ class NetworkModule{
 
     @Provides
     @Singleton
+    fun provideOkHttpCache(@ApplicationContext context: Context): Cache{
+        val cacheSize = CACHE_SIZE_BYTES // 10 MB
+        val cache = Cache(context.cacheDir, cacheSize.toLong())
+        return cache
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
-        headerInterceptor: Interceptor
-        //, cache: Cache
+        headerInterceptor: Interceptor, cache: Cache
     ): OkHttpClient {
         val okHttpClientBuilder = OkHttpClient().newBuilder()
         okHttpClientBuilder.connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        //okHttpClientBuilder.cache(cache)
+        okHttpClientBuilder.cache(cache)
         okHttpClientBuilder.addInterceptor(headerInterceptor)
         return okHttpClientBuilder.build()
     }

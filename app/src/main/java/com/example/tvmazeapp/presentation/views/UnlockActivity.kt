@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.preference.PreferenceManager
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.databinding.ActivityUnlockBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +13,7 @@ import timber.log.Timber
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import com.example.tvmazeapp.utils.Security
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,7 +36,6 @@ class UnlockActivity : AppCompatActivity(), View.OnClickListener{
         binding = ActivityUnlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //val security = sharedPreferences.getBoolean("security_pin", false)
         true_pin = sharedPreferences.getString("pin", "") ?: ""
 
         binding.buttonClear.setOnClickListener {
@@ -72,7 +71,10 @@ class UnlockActivity : AppCompatActivity(), View.OnClickListener{
             user_pin+= number.toString()
 
             if (user_pin.length == MAX_LENGHT) {
-                if (user_pin.equals(true_pin)) {
+                val hash = Security.md5(user_pin)
+                Timber.d("Input Hash is: %s ", hash)
+                Timber.d("True Pin Hash is: %s ", true_pin)
+                if (hash == true_pin) {
                     Timber.d("Right Pass")
 
                     val i = Intent(this, ShowsActivity::class.java)

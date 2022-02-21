@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
@@ -22,12 +23,6 @@ import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-/**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [ShowsListFragment]
- * in two-pane mode (on larger screen devices) or self-contained
- * on handsets.
- */
 @AndroidEntryPoint
 class ShowDetailFragment : Fragment() {
 
@@ -70,7 +65,7 @@ class ShowDetailFragment : Fragment() {
             }
         }
 
-        binding.buttonFavorites.setOnClickListener {
+        binding.imgFavorites?.setOnClickListener {
             if (isFavorite){
                 viewModel.removeFromFavorites()
             }else{
@@ -93,11 +88,16 @@ class ShowDetailFragment : Fragment() {
         })
     }
 
-    private fun updateFavoriteButton(isFfavorite: Boolean){
-        if(isFfavorite){
-            binding.buttonFavorites.text = getString(R.string.remove_from_favorites)
-        }else{
-            binding.buttonFavorites.text = getString(R.string.add_to_favorites)
+    private fun updateFavoriteButton(isFavorite: Boolean){
+        binding.imgFavorites?.let {
+            if(it.context!=null)
+            if(isFavorite){
+                it.setImageDrawable(ContextCompat.getDrawable(it.context, R.drawable.ic_favorite_30))
+                it.setColorFilter(ContextCompat.getColor(it.context, R.color.favorite), android.graphics.PorterDuff.Mode.SRC_IN);
+            }else{
+                it.setImageDrawable(ContextCompat.getDrawable(it.context, R.drawable.ic_favorite_border_30))
+                it.setColorFilter(ContextCompat.getColor(it.context, R.color.favorite), android.graphics.PorterDuff.Mode.SRC_IN);
+            }
         }
     }
 

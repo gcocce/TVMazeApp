@@ -22,8 +22,19 @@ class DBShowMapperTest : TestCase(){
         language = "English", summary = "tvmaze", schedule_time = "10pm", schedule_days = "Monday#Tuesday",
         image_medium = "medium", image_original = "original")
 
-        MatcherAssert.assertThat(show, IsEqual.equalTo(DBShowMapper().mapFromEntity(dbShow)))
-
         MatcherAssert.assertThat(dbShow, IsEqual.equalTo(DBShowMapper().mapToEntity(show)))
+    }
+
+    @Test
+    fun testDBShowToShow() {
+        val show = Show(id=1, url="tvmaze", name="tvmaze", status="available", type="tvmaze", listOf("Horror", "Fiction"),
+            language = "English", summary = "tvmaze", schedule = ShowSchedule("10pm", listOf("Monday", "Tuesday")),
+            image = ShowImage("medium", "original"))
+
+        val dbShow = DBShow(id = 1, url="tvmaze", name="tvmaze", status = "available", type = "tvmaze", genres = "Horror#Fiction",
+            language = "English", summary = "tvmaze", schedule_time = "10pm", schedule_days = "Monday#Tuesday",
+            image_medium = "medium", image_original = "original")
+
+        MatcherAssert.assertThat(show, IsEqual.equalTo(DBShowMapper().mapFromEntity(dbShow)))
     }
 }

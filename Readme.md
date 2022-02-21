@@ -13,7 +13,7 @@
 * Allow the user to browse their favorite series in alphabetical order, and click on one to
   see its details
 
-* Some Unit testing for Moshi json converter and DTOs
+* Some Unit testing for Moshi json converter for DTOs and Mappers to Domain Model
 
 
 

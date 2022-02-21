@@ -85,7 +85,11 @@ class ShowEpisodesFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer<String>{ message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if (viewModel.showError?.value == true){
+                viewModel.cleanError()
+                Timber.d("viewModel.error.observe")
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
         })
 
         viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->

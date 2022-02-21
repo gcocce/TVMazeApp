@@ -1,21 +1,17 @@
 package com.example.tvmazeapp.presentation.views
 
-import android.content.ClipData
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.view.DragEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -24,14 +20,10 @@ import com.bumptech.glide.request.target.Target
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
 import com.example.tvmazeapp.databinding.FragmentShowDetailBinding
-import com.example.tvmazeapp.domain.entities.Episode
-import com.example.tvmazeapp.domain.entities.SeasonList
 import com.example.tvmazeapp.domain.entities.Show
-import com.example.tvmazeapp.presentation.adapters.SeasonsAdapter
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.lang.NullPointerException
 
 /**
  * A fragment representing a single Item detail screen.
@@ -108,7 +100,11 @@ class ShowDetailFragment : Fragment() {
         })
 
         viewModel.error.observe(this, Observer<String>{ message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if (viewModel.showError?.value == true){
+                viewModel.cleanError()
+                Timber.d("viewModel.error.observe")
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
         })
     }
 

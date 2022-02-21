@@ -69,7 +69,11 @@ class ShowEpisodeDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.error.observe(this, Observer<String>{ message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if (viewModel.showError?.value == true){
+                viewModel.cleanError()
+                Timber.d("viewModel.error.observe")
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
         })
 
         viewModel.selectedEpisode.value?.let {

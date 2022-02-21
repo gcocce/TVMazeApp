@@ -5,19 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/show_title"
-        style="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingEnd="@dimen/container_horizontal_margin"
-        android:paddingStart="@dimen/container_horizontal_margin"
-        android:paddingTop="16dp"
-        android:gravity="center_horizontal"
-        android:text="Details"
-        android:textSize="20sp"
-        android:textIsSelectable="true"
-        tools:context="com.example.tvmazeapp.presentation.views.ShowDetailFragment" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

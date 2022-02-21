@@ -21,7 +21,7 @@ class NetworkShowMapper
             type = entity.type ?: "",
             url = entity.url,
             genres = entity.genres,
-            language = entity.language,
+            language = entity.language ?: "",
             summary = entity.summary ?: "No summary",
             schedule = ShowSchedule(entity.schedule?.time ?: "", entity.schedule?.days ?: emptyList())
         )

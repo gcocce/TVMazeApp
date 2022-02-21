@@ -14,7 +14,10 @@ suspend fun <T> safeApiCall(dispatcher: CoroutineDispatcher, apiCall: suspend ()
             ResultWrapper.Success(apiCall.invoke())
         } catch (throwable: Throwable) {
             when (throwable) {
-                is IOException -> ResultWrapper.NetworkError
+                is IOException -> {
+                    Timber.e(throwable.toString())
+                    ResultWrapper.NetworkError
+                }
                 is HttpException -> {
                     val code = throwable.code()
                     val errorResponse = convertErrorBody(throwable)

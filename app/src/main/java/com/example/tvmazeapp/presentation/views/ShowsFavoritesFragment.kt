@@ -20,44 +20,40 @@ import timber.log.Timber
 import android.view.MenuInflater
 import android.content.Intent
 import android.widget.SearchView
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.LiveData
+import com.example.tvmazeapp.databinding.FragmentShowFavoritesBinding
 import com.example.tvmazeapp.presentation.viewmodels.Mode
 
-
 @AndroidEntryPoint
-class ShowsListFragment : Fragment() {
-
+class ShowsFavoritesFragment : Fragment() {
     val viewModel: ShowsViewModel by activityViewModels()
 
     private lateinit var recyclerViewAdapter: ShowsAdapter
 
-    private var itemDetailFragmentContainer: View? = null
-
-    private var _binding: FragmentShowListBinding? = null
+    private var _binding: FragmentShowFavoritesBinding? = null
 
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentShowListBinding.inflate(inflater, container, false)
+        _binding = FragmentShowFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView? = binding.showListRecyclerView
+        val recyclerView: RecyclerView? = binding.showFavoritesRecyclerView
 
         // Leaving this not using view binding as it relies on if the view is visible the current
         // layout configuration (layout, layout-sw600dp)
-        itemDetailFragmentContainer = view.findViewById(R.id.item_detail_nav_container)
+        val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
 
         /** Click Listener to trigger navigation based on if you have
          * a single pane layout or two pane layout
@@ -70,10 +66,10 @@ class ShowsListFragment : Fragment() {
 
             if (itemDetailFragmentContainer != null) {
                 // layout configuration (layout, layout-sw600dp)
-                itemDetailFragmentContainer?.findNavController()
-                    ?.navigate(R.id.fragment_item_detail)
+                itemDetailFragmentContainer.findNavController()
+                    .navigate(R.id.fragment_item_detail)
             } else {
-                itemView.findNavController().navigate(R.id.show_item_detail)
+                itemView.findNavController().navigate(R.id.action_to_item_detail_fragment)
             }
         }
 
@@ -82,18 +78,14 @@ class ShowsListFragment : Fragment() {
         recyclerView?.adapter = recyclerViewAdapter
         recyclerView?.layoutManager = GridLayoutManager(context,2);
 
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    viewModel.nextPage()
-                }
-            }
-        })
+        viewModel.favorites.value?.let {
+            Timber.d("%s Favorites size %s", TVMazeApp().TAG, it.size)
+            recyclerViewAdapter?.shows = it
+        }
 
-        viewModel.shows.observe(this, Observer<List<Show>>{ shows ->
-            Timber.d("%s List of Shows changed... ShowsListFragment ", TVMazeApp().TAG)
-            recyclerViewAdapter?.shows = shows
+        viewModel.favorites.observe(this, Observer<List<Show>>{ favorites ->
+            Timber.d("%s List of Favorites changed... ", TVMazeApp().TAG)
+            recyclerViewAdapter?.shows = favorites
         })
 
         viewModel.error.observe(this, Observer<String>{ message ->
@@ -115,53 +107,6 @@ class ShowsListFragment : Fragment() {
                 }
             }
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        inflater.inflate(R.menu.show_option_menu, menu)
-
-        val searchView = SearchView((activity as ShowsActivity).supportActionBar?.themedContext ?: context)
-
-        menu.findItem(R.id.menu_item_search).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
-            actionView = searchView
-        }
-
-        searchView.isIconifiedByDefault = false
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                Timber.d("searchView onQueryTextSubmit %s", query)
-                viewModel.searchShowRemote(query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                Timber.d("searchView onQueryTextChange")
-                return false
-            }
-        })
-        searchView.setOnClickListener {view ->  }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.d("%s ItemSelected: %s", TVMazeApp().TAG, item)
-
-        when (item.itemId) {
-            R.id.menu_item_settings -> {
-                val intent = Intent(activity, SettingsActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.menu_item_full_list -> {
-                viewModel.switchToFullList()
-            }
-            R.id.menu_item_favorites -> {
-                findNavController().navigate(R.id.show_favorites_fragment)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

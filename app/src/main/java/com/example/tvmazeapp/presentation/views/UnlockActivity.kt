@@ -16,7 +16,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class UnlockActivity : AppCompatActivity(), View.OnClickListener{
 

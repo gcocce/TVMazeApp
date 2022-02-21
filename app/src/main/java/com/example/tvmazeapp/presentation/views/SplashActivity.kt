@@ -22,7 +22,6 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         val security = sharedPreferences.getBoolean("security_pin", false)
-
         Timber.d("security is : %s", security)
 
         Handler(Looper.getMainLooper()).postDelayed({

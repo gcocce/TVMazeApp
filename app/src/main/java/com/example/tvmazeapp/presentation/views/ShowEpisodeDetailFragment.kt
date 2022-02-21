@@ -45,8 +45,6 @@ class ShowEpisodeDetailFragment : Fragment() {
 
     val viewModel: ShowsViewModel by activityViewModels()
 
-    lateinit var titleTextView: TextView
-
     private var _binding: FragmentEpisodeDetailBinding? = null
 
     // This property is only valid between onCreateView and
@@ -64,8 +62,6 @@ class ShowEpisodeDetailFragment : Fragment() {
         _binding = FragmentEpisodeDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        titleTextView = binding.showTitle
-
         return rootView
     }
 
@@ -78,7 +74,6 @@ class ShowEpisodeDetailFragment : Fragment() {
 
         viewModel.selectedEpisode.value?.let {
             binding.showTitle.text = it.name
-
             updateContent()
         }
     }

@@ -9,7 +9,6 @@ import timber.log.Timber
 import java.net.InetAddress
 
 object NetUtility {
-
     fun isInternetAvailable(): Boolean {
         return try {
             Timber.d("%s isInternetAvailable", TVMazeApp().TAG)
@@ -23,5 +22,4 @@ object NetUtility {
             false
         }
     }
-
 }

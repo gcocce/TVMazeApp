@@ -43,8 +43,6 @@ class SeasonsAdapter(
 
         val titleView: TextView = binding.seasonTitle
         val episodesRecyclerView = binding.seasonEpisodesRecyclerview
-
     }
-
 }
 

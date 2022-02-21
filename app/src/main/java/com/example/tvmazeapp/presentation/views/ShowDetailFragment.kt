@@ -50,20 +50,8 @@ class ShowDetailFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val dragListener = View.OnDragListener { v, event ->
-        if (event.action == DragEvent.ACTION_DROP) {
-            val clipDataItem: ClipData.Item = event.clipData.getItemAt(0)
-
-            val showId = clipDataItem.text.toString()
-            updateContent()
-        }
-        true
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Timber.d("onCreate in ShowDetailFragment")
     }
 
     override fun onCreateView(
@@ -73,12 +61,7 @@ class ShowDetailFragment : Fragment() {
         _binding = FragmentShowDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        Timber.d("onCreateView in ShowDetailFragment")
-
         binding.posterProgress.visibility=View.VISIBLE
-
-        //updateContent()
-        rootView.setOnDragListener(dragListener)
 
         return rootView
     }
@@ -92,8 +75,6 @@ class ShowDetailFragment : Fragment() {
 
         binding.button?.let {
             it.setOnClickListener {
-                // Do some work here
-                //val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
                 if (itemDetailFragmentContainer != null) {
                     // layout configuration (layout, layout-sw600dp)
                     itemDetailFragmentContainer.findNavController()
@@ -123,7 +104,6 @@ class ShowDetailFragment : Fragment() {
 
         viewModel.selectedShow.observe(this, Observer<Show>{ show ->
             Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
-
             updateContent()
         })
 
@@ -166,16 +146,12 @@ class ShowDetailFragment : Fragment() {
                     .centerInside()
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                            if (binding.posterProgress.visibility ==View.VISIBLE){
-                                binding.posterProgress.setVisibility(View.GONE)
-                            }
+                            binding.posterProgress.setVisibility(View.GONE)
                             return false
                         }
                         override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
                             Timber.d("onResourceReady")
-                            if (binding.posterProgress.visibility ==View.VISIBLE){
-                                binding.posterProgress.setVisibility(View.GONE)
-                            }
+                            binding.posterProgress.setVisibility(View.GONE)
                             return false
                         }
                     })

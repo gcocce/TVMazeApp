@@ -1,14 +1,7 @@
 package com.example.tvmazeapp.presentation.views
 
-import android.app.SearchManager
-import android.content.ClipData
-import android.content.ClipDescription
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,11 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.TVMazeApp
 import com.example.tvmazeapp.databinding.FragmentShowListBinding
-import com.example.tvmazeapp.databinding.ShowCardviewBinding
 import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.adapters.ShowsAdapter
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
@@ -29,18 +20,9 @@ import timber.log.Timber
 import android.view.MenuInflater
 import android.content.Intent
 import android.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.tvmazeapp.presentation.viewmodels.Mode
 
 
-/**
- * A Fragment representing a list of Pings. This fragment
- * has different presentations for handset and larger screen devices. On
- * handsets, the fragment presents a list of items, which when touched,
- * lead to a {@link ItemDetailFragment} representing
- * item details. On larger screens, the Navigation controller presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 @AndroidEntryPoint
 class ShowsListFragment : Fragment() {
 
@@ -81,7 +63,6 @@ class ShowsListFragment : Fragment() {
             val item = itemView.tag as Show
 
             viewModel.setSelectedShow(item)
-
             Timber.d("%s item %s %s %s", item.name, item.language, item.summary, TVMazeApp().TAG)
 
             if (itemDetailFragmentContainer != null) {
@@ -93,22 +74,7 @@ class ShowsListFragment : Fragment() {
             }
         }
 
-        /**
-         * Context click listener to handle Right click events
-         * from mice and trackpad input to provide a more native
-         * experience on larger screen devices
-         */
-        val onContextClickListener = View.OnContextClickListener { v ->
-            val item = v.tag as Show
-
-            Timber.d("Context click of item " + item.id)
-
-            viewModel.setSelectedShow(item)
-
-            true
-        }
-
-        recyclerViewAdapter = ShowsAdapter(onClickListener,onContextClickListener)
+        recyclerViewAdapter = ShowsAdapter(onClickListener)
 
         recyclerView?.adapter = recyclerViewAdapter
         recyclerView?.layoutManager = GridLayoutManager(context,2);
@@ -175,7 +141,6 @@ class ShowsListFragment : Fragment() {
                 Timber.d("searchView onQueryTextSubmit %s", query)
 
                 viewModel.searchShowRemote(query)
-
                 return false
             }
 

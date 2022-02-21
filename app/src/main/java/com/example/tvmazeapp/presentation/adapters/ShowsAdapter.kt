@@ -1,32 +1,19 @@
 package com.example.tvmazeapp.presentation.adapters
 
-import android.content.ClipData
-import android.content.ClipDescription
-import android.content.Intent
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.LayoutRes
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.net.toUri
-import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tvmazeapp.R
 import com.example.tvmazeapp.databinding.ShowCardviewBinding
 import com.example.tvmazeapp.domain.entities.Show
-import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
-import timber.log.Timber
-import java.io.File
 
 
 class ShowsAdapter(
-    private val onClickListener: View.OnClickListener,
-    private val onContextClickListener: View.OnContextClickListener
+    private val onClickListener: View.OnClickListener
 ) :
     RecyclerView.Adapter<ShowsAdapter.ViewHolder>() {
 
@@ -59,36 +46,6 @@ class ShowsAdapter(
         with(holder.itemView) {
             tag = item
             setOnClickListener(onClickListener)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                setOnContextClickListener(onContextClickListener)
-            }
-
-            setOnLongClickListener { v ->
-                // Setting the item id as the clip data so that the drop target is able to
-                // identify the id of the content
-                val clipItem = ClipData.Item(item.name)
-                val dragData = ClipData(
-                    v.tag as? CharSequence,
-                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
-                    clipItem
-                )
-
-                if (Build.VERSION.SDK_INT >= 24) {
-                    v.startDragAndDrop(
-                        dragData,
-                        View.DragShadowBuilder(v),
-                        null,
-                        0
-                    )
-                } else {
-                    v.startDrag(
-                        dragData,
-                        View.DragShadowBuilder(v),
-                        null,
-                        0
-                    )
-                }
-            }
         }
     }
 
@@ -100,6 +57,4 @@ class ShowsAdapter(
         val titleView: TextView = binding.title
         val imageView: ImageView = binding.poster
     }
-
 }
-

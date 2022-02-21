@@ -40,23 +40,11 @@ import timber.log.Timber
  */
 @AndroidEntryPoint
 class EmptyFragment : Fragment() {
-
-    lateinit var titleTextView: TextView
-
     private var _binding: FragmentEmptyBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    private val dragListener = View.OnDragListener { v, event ->
-        if (event.action == DragEvent.ACTION_DROP) {
-
-            Timber.d("OnDragListener in EmptyFragment")
-            updateContent()
-        }
-        true
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,31 +57,11 @@ class EmptyFragment : Fragment() {
         _binding = FragmentEmptyBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        Timber.d("onCreateView in EmptyFragment")
-
-        titleTextView = binding.showTitle
-
-        rootView.setOnDragListener(dragListener)
-
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
-
-        Timber.d("onViewCreated in EmptyFragment")
-
-    }
-
-
-    private fun updateContent() {
-
-        if(binding!=null){
-            binding.showTitle.text = "show.name"
-        }
-
     }
 
     override fun onDestroyView() {

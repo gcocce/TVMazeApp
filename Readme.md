@@ -1,6 +1,6 @@
-# Project Name
+# TVMazeApp
 
-## What is done?
+## What is done so far
 
 * Mandatory Features
 
@@ -18,3 +18,19 @@
 
 
 There is an Apk exported inside the project app/release/app-release.apk
+
+
+
+![Splashscreen](screenshots/splash.png)
+
+![Main screen](screenshots/main_screen.png)
+
+![Settings](screenshots/settings.png)
+
+![Search](screenshots/search.png)
+
+![Favorites](screenshots/favorites.png)
+
+![Lock](screenshots/lock.png)
+
+![Tablet](screenshots/tablet.png)

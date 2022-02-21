@@ -2,8 +2,6 @@ package com.example.tvmazeapp.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.tvmazeapp.domain.entities.ShowImage
-import com.example.tvmazeapp.domain.entities.ShowSchedule
 
 @Entity(tableName = "favorites")
 data class DBShow(

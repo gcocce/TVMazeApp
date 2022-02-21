@@ -1,7 +1,6 @@
 package com.example.tvmazeapp.data.local.mappers
 
 import com.example.tvmazeapp.data.local.entities.DBShow
-import com.example.tvmazeapp.data.remote.dtos.NetworkShow
 import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.domain.entities.ShowImage
 import com.example.tvmazeapp.domain.entities.ShowSchedule

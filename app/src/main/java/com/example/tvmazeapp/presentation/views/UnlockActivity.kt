@@ -1,6 +1,7 @@
 package com.example.tvmazeapp.presentation.views
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -13,10 +14,14 @@ import timber.log.Timber
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class UnlockActivity : AppCompatActivity(), View.OnClickListener{
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private val MAX_LENGHT = 4
     private var user_pin = ""
@@ -32,8 +37,7 @@ class UnlockActivity : AppCompatActivity(), View.OnClickListener{
         binding = ActivityUnlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this /* Activity context */)
-        val security = sharedPreferences.getBoolean("security_pin", false)
+        //val security = sharedPreferences.getBoolean("security_pin", false)
         true_pin = sharedPreferences.getString("pin", "") ?: ""
 
         binding.buttonClear.setOnClickListener {

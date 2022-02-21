@@ -3,12 +3,8 @@ package com.example.tvmazeapp.data.remote.mappers
 
 import com.example.tvmazeapp.data.remote.dtos.NetworkEpisode
 import com.example.tvmazeapp.data.remote.dtos.NetworkImage
-import com.example.tvmazeapp.data.remote.dtos.NetworkSchedule
-import com.example.tvmazeapp.data.remote.dtos.NetworkShow
 import com.example.tvmazeapp.domain.entities.Episode
-import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.domain.entities.ShowImage
-import com.example.tvmazeapp.domain.entities.ShowSchedule
 import com.example.tvmazeapp.domain.mappers.EntityMapper
 import javax.inject.Inject
 

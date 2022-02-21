@@ -20,19 +20,14 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 @InstallIn(SingletonComponent::class)
 class NetworkModule{
 
-    //fun provideRetrofit(gson: Gson) : Retrofit = Retrofit.Builder()
     @Singleton
     @Provides
     fun provideRetrofit(moshi: Moshi) : Retrofit = Retrofit.Builder()
         .baseUrl("https://api.tvmaze.com/")
         //.client(provideOkHttpClient(provideHeaderInterceptor()))
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        //.addConverterFactory(GsonConverterFactory.create(gson))
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
-
-    //@Provides
-    //fun provideGson(): Gson = GsonBuilder().create()
 
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
@@ -74,6 +69,5 @@ class NetworkModule{
             it.proceed(requestBuilder.build())
         }
     }
-
 }
 

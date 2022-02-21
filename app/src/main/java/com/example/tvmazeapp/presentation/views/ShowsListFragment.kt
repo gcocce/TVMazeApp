@@ -21,8 +21,6 @@ import android.view.MenuInflater
 import android.content.Intent
 import android.widget.SearchView
 import androidx.navigation.fragment.findNavController
-import com.example.tvmazeapp.presentation.viewmodels.Mode
-
 
 @AndroidEntryPoint
 class ShowsListFragment : Fragment() {
@@ -41,12 +39,12 @@ class ShowsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel.error.observe(this, Observer<String>{ message ->
+        viewModel.error.observe(this, { message ->
             Timber.d("viewModel.error.observe")
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
 
-        viewModel.message.observe(this, Observer<String>{ message ->
+        viewModel.message.observe(this, { message ->
             Timber.d("viewModel.message.observe")
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
@@ -55,7 +53,7 @@ class ShowsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentShowListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -63,7 +61,7 @@ class ShowsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView? = binding.showListRecyclerView
+        val recyclerView: RecyclerView = binding.showListRecyclerView
 
         // Leaving this not using view binding as it relies on if the view is visible the current
         // layout configuration (layout, layout-sw600dp)
@@ -89,10 +87,10 @@ class ShowsListFragment : Fragment() {
 
         recyclerViewAdapter = ShowsAdapter(onClickListener)
 
-        recyclerView?.adapter = recyclerViewAdapter
-        recyclerView?.layoutManager = GridLayoutManager(context,2);
+        recyclerView.adapter = recyclerViewAdapter
+        recyclerView.layoutManager = GridLayoutManager(context,2)
 
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
@@ -101,7 +99,7 @@ class ShowsListFragment : Fragment() {
             }
         })
 
-        viewModel.progressLoadingShows.observe(this, Observer<Boolean>{ progress ->
+        viewModel.progressLoadingShows.observe(this, { progress ->
             _binding?.progressLoadingShowList?.let {
                 progress?.let {
                     if (progress){
@@ -113,7 +111,7 @@ class ShowsListFragment : Fragment() {
             }
         })
 
-        viewModel.shows.observe(this, Observer<List<Show>>{ shows ->
+        viewModel.shows.observe(this, { shows ->
             Timber.d("%s List of Shows changed... ShowsListFragment ", TVMazeApp().TAG)
             recyclerViewAdapter?.shows = shows
         })

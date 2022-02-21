@@ -4,12 +4,10 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import com.example.tvmazeapp.databinding.ActivityCustomSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
-import android.widget.CompoundButton
 import android.widget.Toast
 import com.example.tvmazeapp.utils.Security
 
@@ -77,22 +75,16 @@ class CustomSettingsActivity : AppCompatActivity() {
         }
     }
 
-    fun disableAll(){
+    private fun disableAll(){
         binding.etPin.isEnabled = false
-        if (binding.switchFingerPrint.visibility == View.VISIBLE){
-            binding.switchFingerPrint.isEnabled = false
-        }
     }
 
-    fun enableAll(){
+    private fun enableAll(){
         binding.etPin.isEnabled = true
-        if (binding.switchFingerPrint.visibility == View.VISIBLE){
-            binding.switchFingerPrint.isEnabled = true
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 super.onBackPressed()
                 return true

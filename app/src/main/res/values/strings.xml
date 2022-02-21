@@ -1,20 +1,13 @@
 <resources>
     <string name="app_name">TVMazeApp</string>
-    <string name="title_item_detail">Item Detail</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="search_hint">Enter Show Name</string>
 
-    <string name="security_title">Set Application Security </string>
-    <string name="security_summary_on">Provide PIN to enter Application</string>
-    <string name="security_summary_off">No Security</string>
-    <string name="pin_title">PIN</string>
-    <string name="title_activity_splash">SplashActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="unlock_title">Unlock</string>
     <string name="add_to_favorites">Add To Favorites</string>
-    <string name="adfavor">Add to Favorites</string>
     <string name="remove_from_favorites">Remove from Favorites</string>
     <string name="pin">PIN</string>
+    <string name="pin_number">PIN Number</string>
+    <string name="settings">Settings</string>
+    <string name="security">Security</string>
 
 </resources>

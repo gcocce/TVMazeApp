@@ -1,10 +1,6 @@
 package com.example.tvmazeapp.utils
 
 import com.example.tvmazeapp.TVMazeApp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.InetAddress
 

@@ -3,7 +3,6 @@ package com.example.tvmazeapp.data.remote
 import com.example.tvmazeapp.data.remote.dtos.NetworkEpisode
 import com.example.tvmazeapp.data.remote.dtos.NetworkShow
 import com.example.tvmazeapp.data.remote.dtos.NetworkShowQuery
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

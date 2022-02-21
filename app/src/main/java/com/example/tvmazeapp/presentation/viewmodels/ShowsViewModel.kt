@@ -83,7 +83,7 @@ class ShowsViewModel @Inject constructor(
         if (mode!=Mode.LIST){
             mode=Mode.LIST
 
-            _shows.value = ArrayList<Show>()
+            _shows.value = ArrayList()
             _progressLoadingShows.postValue(true)
 
             currentPage = 0
@@ -138,7 +138,7 @@ class ShowsViewModel @Inject constructor(
                     _error.postValue("Network Error")
                 }
                 is ResultWrapper.GenericError -> {
-                    Timber.d("remoteQueryResponse GenericError ${remoteQueryResponse}")
+                    Timber.d("remoteQueryResponse GenericError $remoteQueryResponse")
                     _error.postValue("Unexpected Error")
                 }
                 is ResultWrapper.Success -> {
@@ -165,10 +165,10 @@ class ShowsViewModel @Inject constructor(
                     _error.postValue("Network Error")
                 }
                 is ResultWrapper.GenericError -> {
-                    Timber.d("remoteShowsResponse GenericError ${remoteShowsResponse}")
+                    Timber.d("remoteShowsResponse GenericError $remoteShowsResponse")
 
                     // TVMaze respondes 404 when there are no more pages to retrieve
-                    if (remoteShowsResponse?.code!=404){
+                    if (remoteShowsResponse.code !=404){
                         _error.postValue("Unexpected Error")
                     }
                 }

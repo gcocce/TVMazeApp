@@ -49,10 +49,9 @@ class NetworkModule{
 
     @Provides
     @Singleton
-    fun provideOkHttpCache(@ApplicationContext context: Context): Cache{
+    fun provideOkHttpCache(@ApplicationContext context: Context): Cache {
         val cacheSize = CACHE_SIZE_BYTES // 10 MB
-        val cache = Cache(context.cacheDir, cacheSize.toLong())
-        return cache
+        return Cache(context.cacheDir, cacheSize)
     }
 
     @Provides

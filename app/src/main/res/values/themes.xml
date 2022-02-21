@@ -14,14 +14,6 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.TVMazeApp.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="Theme.TVMazeApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.TVMazeApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="colorPrimary">@color/purple_500</item>

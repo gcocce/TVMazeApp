@@ -1,7 +1,6 @@
 package com.example.tvmazeapp.domain.entities
 
 import android.os.Parcelable
-import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

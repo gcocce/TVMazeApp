@@ -1,27 +1,17 @@
 package com.example.tvmazeapp.presentation.views
 
 import android.os.Bundle
-import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.tvmazeapp.R
-import com.example.tvmazeapp.TVMazeApp
 import com.example.tvmazeapp.databinding.ActivityShowsBinding
-import com.example.tvmazeapp.domain.entities.Show
 import com.example.tvmazeapp.presentation.viewmodels.ShowsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
-import android.app.SearchManager
-
-import android.content.Intent
-import androidx.preference.PreferenceManager
-
 
 @AndroidEntryPoint
 class ShowsActivity : AppCompatActivity() {

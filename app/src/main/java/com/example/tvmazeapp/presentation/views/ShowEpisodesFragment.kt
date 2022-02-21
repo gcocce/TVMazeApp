@@ -38,7 +38,7 @@ class ShowEpisodesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.error.observe(this, Observer<String>{ message ->
+        viewModel.error.observe(this, { message ->
             Timber.d("viewModel.error.observe")
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
@@ -47,11 +47,10 @@ class ShowEpisodesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentShowEpisodesBinding.inflate(inflater, container, false)
-        val rootView = binding.root
 
-        return rootView
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,27 +73,27 @@ class ShowEpisodesFragment : Fragment() {
             }
         }
 
-        val recyclerView: RecyclerView? = binding.episodeListRecyclerView
+        val recyclerView: RecyclerView = binding.episodeListRecyclerView
 
         seasonsAdapter = SeasonsAdapter(onClickListener)
-        recyclerView?.adapter = seasonsAdapter
+        recyclerView.adapter = seasonsAdapter
 
         val seasonList = SeasonList(emptyList())
         seasonsAdapter.seasonList = seasonList
 
-        viewModel.episodes.observe(this, Observer<List<Episode>>{ episodes ->
+        viewModel.episodes.observe(this, { episodes ->
             episodes?.let {
                 loadEpisodes(seasonsAdapter, it)
             }
         })
 
-         viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->
+         viewModel.progressLoadingEpisodes.observe(this, { progress ->
             _binding?.progressLoadingEpisodeList?.let {
                 progress?.let {
                     if (progress){
-                        binding.progressLoadingEpisodeList?.visibility = View.VISIBLE
+                        binding.progressLoadingEpisodeList.visibility = View.VISIBLE
                     }else{
-                        binding.progressLoadingEpisodeList?.visibility = View.GONE
+                        binding.progressLoadingEpisodeList.visibility = View.GONE
                     }
                 }
             }

@@ -9,7 +9,7 @@ import com.example.tvmazeapp.data.local.entities.DBShow
 @Database(entities = [DBShow::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun showDao(): ShowDao
+    abstract fun favoritesShowsDao(): ShowsDao
 
     companion object {
 

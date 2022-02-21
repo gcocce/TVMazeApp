@@ -16,17 +16,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+enum class Mode {LIST, SEARCH, FAVORITES}
+
 @HiltViewModel
 class ShowsViewModel @Inject constructor(
     private val repository: TVMazeRepository
 ): ViewModel(){
-    enum class Mode {LIST, SEARCH, FAVORITES}
 
     var mode:Mode = Mode.LIST
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
-
 
     private val _progressLoadingShows = MutableLiveData<Boolean>()
     val progressLoadingShows: LiveData<Boolean> = _progressLoadingShows
@@ -34,10 +34,11 @@ class ShowsViewModel @Inject constructor(
     private val _progressLoadingEpisodes = MutableLiveData<Boolean>()
     val progressLoadingEpisodes: LiveData<Boolean> = _progressLoadingEpisodes
 
-
-
     private val _selectedShow = MutableLiveData<Show>()
     val selectedShow: LiveData<Show> = _selectedShow
+
+    private val _selectedShowIsFavorite = MutableLiveData<Boolean>()
+    val selectedShowIsFavorite: LiveData<Boolean> = _selectedShowIsFavorite
 
     private val _shows = MutableLiveData<ArrayList<Show>>()
     val shows: LiveData<ArrayList<Show>> = _shows
@@ -48,6 +49,11 @@ class ShowsViewModel @Inject constructor(
     private val _selectedEpisode = MutableLiveData<Episode>()
     val selectedEpisode: LiveData<Episode> = _selectedEpisode
 
+    val favorites: LiveData<List<Show>>
+        get() {
+            return repository.favorites
+        }
+
     private var currentPage = 0
     private var downloadingNextPage = false
 
@@ -57,6 +63,13 @@ class ShowsViewModel @Inject constructor(
 
     fun setSelectedShow(show: Show){
         _selectedShow.postValue(show)
+
+        viewModelScope.launch {
+            selectedShowIsFavorite
+
+            val isFavorite = repository.isFavorite(show)
+            _selectedShowIsFavorite.postValue(isFavorite)
+        }
     }
 
     fun setSelectedEpisode(episode: Episode){
@@ -75,13 +88,40 @@ class ShowsViewModel @Inject constructor(
         }
     }
 
+    fun switchToFavorites(){
+        if(mode != Mode.FAVORITES){
+            mode = Mode.FAVORITES
+            _shows.value = ArrayList<Show>()
+        }
+    }
+
     fun nextPage(){
         if (mode==Mode.LIST){
-
             if(!downloadingNextPage){
                 currentPage +=1
                 downloadingNextPage = true
                 loadShowsPage(currentPage)
+            }
+        }
+    }
+
+    fun addShowAsFavorites(){
+        viewModelScope.launch {
+            val currentSelectedShow = selectedShow.value
+            if (currentSelectedShow!=null){
+                Timber.d("Add show to favorites %s", currentSelectedShow.name)
+                repository.addFavorite(currentSelectedShow)
+                _selectedShowIsFavorite.postValue(true)
+            }
+        }
+    }
+
+    fun removeFromFavorites(){
+        viewModelScope.launch {
+            val currentSelectedShow = selectedShow.value
+            if(currentSelectedShow!=null){
+                repository.removeFromFavorites(currentSelectedShow)
+                _selectedShowIsFavorite.postValue(false)
             }
         }
     }

@@ -30,6 +30,7 @@ import android.view.MenuInflater
 import android.content.Intent
 import android.widget.SearchView
 import androidx.core.content.ContextCompat.getSystemService
+import com.example.tvmazeapp.presentation.viewmodels.Mode
 
 
 /**
@@ -121,9 +122,21 @@ class ShowsListFragment : Fragment() {
             }
         })
 
+        viewModel.favorites.observe(this, Observer<List<Show>>{ shows ->
+            if (viewModel.mode == Mode.FAVORITES){
+                recyclerViewAdapter?.shows = shows
+            }
+        })
+
         viewModel.shows.observe(this, Observer<ArrayList<Show>>{ shows ->
             Timber.d("%s List of Shows changed... ", TVMazeApp().TAG)
-            recyclerViewAdapter?.shows = shows
+            if (viewModel.mode == Mode.LIST || viewModel.mode == Mode.SEARCH){
+                recyclerViewAdapter?.shows = shows
+            }else{
+                if(viewModel.favorites.value!=null){
+                    recyclerViewAdapter?.shows = viewModel.favorites.value!!
+                }
+            }
         })
 
         viewModel.error.observe(this, Observer<String>{ message ->
@@ -186,7 +199,7 @@ class ShowsListFragment : Fragment() {
                 viewModel.switchToFullList()
             }
             R.id.menu_item_favorites -> {
-
+                viewModel.switchToFavorites()
             }
         }
         return super.onOptionsItemSelected(item)

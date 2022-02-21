@@ -44,9 +44,7 @@ class ShowDetailFragment : Fragment() {
 
     val viewModel: ShowsViewModel by activityViewModels()
 
-    private lateinit var seasonsAdapter: SeasonsAdapter
-
-    lateinit var titleTextView: TextView
+    var isFavorite = false
 
     private var _binding: FragmentShowDetailBinding? = null
 
@@ -77,8 +75,6 @@ class ShowDetailFragment : Fragment() {
 
         Timber.d("onCreateView in ShowDetailFragment")
 
-        titleTextView = binding.showTitle
-
         binding.posterProgress.visibility=View.VISIBLE
 
         //updateContent()
@@ -94,11 +90,6 @@ class ShowDetailFragment : Fragment() {
 
         val itemDetailFragmentContainer: View? = view.findViewById(R.id.item_detail_nav_container)
 
-        val onClickListener = View.OnClickListener { itemView ->
-            val item = itemView.tag as Episode
-            Timber.d("%s Episode %s Number %s", item.name, item.number, TVMazeApp().TAG)
-        }
-
         binding.button?.let {
             it.setOnClickListener {
                 // Do some work here
@@ -113,72 +104,40 @@ class ShowDetailFragment : Fragment() {
             }
         }
 
-        //val recyclerView: RecyclerView? = binding.episodeListRecyclerView
+        binding.buttonFavorites?.setOnClickListener {
+            if (isFavorite){
+                viewModel.removeFromFavorites()
+            }else{
+                viewModel.addShowAsFavorites()
+            }
+        }
 
-        //seasonsAdapter = SeasonsAdapter(onClickListener)
-        //recyclerView?.adapter = seasonsAdapter
+        isFavorite = viewModel.selectedShowIsFavorite?.value ?: false
+
+        updateFavoriteButton(isFavorite)
+
+        viewModel.selectedShowIsFavorite.observe(this, Observer<Boolean> {
+            isFavorite = it
+            updateFavoriteButton(isFavorite)
+        })
 
         viewModel.selectedShow.observe(this, Observer<Show>{ show ->
             Timber.d("%s detail show %s %s %s", show.name, show.language, show.summary, TVMazeApp().TAG)
 
             updateContent()
-
-            //viewModel.loadEpisodes(show.id)
         })
 
         viewModel.error.observe(this, Observer<String>{ message ->
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         })
-
-        /*
-        viewModel.episodes.observe(this, Observer<List<Episode>>{ episodes ->
-            for( e in episodes){
-                Timber.d("%s detail episode %s season %s number %s", TVMazeApp().TAG, e.name, e.season, e.number)
-            }
-
-            episodes?.let {
-                //loadEpisodes(seasonsAdapter, it)
-            }
-        })
-         */
-
-        /*
-        viewModel.progressLoadingEpisodes.observe(this, Observer<Boolean>{ progress ->
-            _binding?.progressLoadingEpisodeList?.let {
-                //if (_binding?.progress?.visibility == View.VISIBLE){
-                progress?.let {
-                    if (progress){
-                        binding.progressLoadingEpisodeList?.visibility = View.VISIBLE
-                    }else{
-                        binding.progressLoadingEpisodeList?.visibility = View.GONE
-                    }
-                }
-            }
-        })
-         */
     }
 
-    private fun loadEpisodes(seasonAdapter: SeasonsAdapter, allEpisodes: List<Episode>){
-        val seasonArrayList = ArrayList<SeasonList.Season>()
-
-        var currentSeason = 1
-        var episodes = ArrayList<Episode>()
-        for(e in allEpisodes){
-            if (e.season == currentSeason){
-                episodes.add(e)
-            }else{
-                val season = SeasonList.Season(currentSeason.toString(), episodes)
-                seasonArrayList.add(season)
-                currentSeason = e.season
-                episodes = ArrayList()
-            }
+    private fun updateFavoriteButton(isFfavorite: Boolean){
+        if(isFfavorite){
+            binding.buttonFavorites?.text = "Remove from Favorites"
+        }else{
+            binding.buttonFavorites?.text = "Add to Favorites"
         }
-
-        val season = SeasonList.Season(currentSeason.toString(), episodes)
-        seasonArrayList.add(season)
-
-        val seasonList = SeasonList(seasonArrayList.toList())
-        seasonAdapter.seasonList = seasonList
     }
 
     private fun updateContent() {
@@ -222,19 +181,7 @@ class ShowDetailFragment : Fragment() {
                     })
                     .into(it)
             }
-
         }
-
-        // Show the placeholder content as text in a TextView.
-        //item?.let {itemDetailTextView.text = it.details}
-    }
-
-    companion object {
-        /**
-         * The fragment argument representing the item ID that this fragment
-         * represents.
-         */
-        const val ARG_ITEM_ID = "item_id"
     }
 
     override fun onDestroyView() {

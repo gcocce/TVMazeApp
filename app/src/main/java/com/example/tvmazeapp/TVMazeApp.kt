@@ -13,8 +13,6 @@ import dagger.hilt.components.SingletonComponent
 import timber.log.Timber
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
 @HiltAndroidApp
 class TVMazeApp: Application() {
 
@@ -26,9 +24,4 @@ class TVMazeApp: Application() {
             Timber.plant(Timber.DebugTree())
         }
     }
-
-    @Singleton
-    @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
 }

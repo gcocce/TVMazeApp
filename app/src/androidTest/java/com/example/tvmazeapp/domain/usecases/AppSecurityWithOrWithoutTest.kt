@@ -1,5 +1,6 @@
 package com.example.tvmazeapp.domain.usecases
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
@@ -8,18 +9,37 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.example.tvmazeapp.R
+import com.example.tvmazeapp.di.PreferencesModule
 import com.example.tvmazeapp.presentation.views.SplashActivity
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.Thread.sleep
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@UninstallModules(PreferencesModule::class)
 @HiltAndroidTest
-class AppStartWithSecurityTest {
+class AppSecurityWithOrWithoutTest {
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    class PreferencesTestModule{
+
+        @Singleton
+        @Provides
+        fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
+            context.getSharedPreferences("test", Context.MODE_PRIVATE)
+    }
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
@@ -34,13 +54,13 @@ class AppStartWithSecurityTest {
         hiltAndroidRule.inject() // 6
     }
 
-    fun setSecurityOn(){
+    private fun setSecurityOn(){
         val editor = sharedPreferences.edit()
         editor.putBoolean("security", true)
         editor.commit()
     }
 
-    fun setSecurityOff(){
+    private fun setSecurityOff(){
         val editor = sharedPreferences.edit()
         editor.putBoolean("security", false)
         editor.commit()
